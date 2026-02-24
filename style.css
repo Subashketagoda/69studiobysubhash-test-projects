@@ -548,8 +548,8 @@ header .container {
 /* Chat Widget System */
 .chat-widget {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
+    bottom: 20px;
+    right: 20px;
     z-index: 2000;
     font-family: 'Outfit', sans-serif;
 }
@@ -581,6 +581,24 @@ header .container {
 
 .chat-bubble:hover {
     transform: scale(1.1);
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ff4757;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    font-weight: 700;
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .chat-label {
@@ -1132,6 +1150,8 @@ footer {
 .footer-bottom p {
     font-size: 13px;
     margin: 0;
+    padding: 0 20px;
+    line-height: 1.6;
 }
 
 /* Comprehensive Responsive Styles */
