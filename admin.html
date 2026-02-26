@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | DinePro Advisors</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-bg: #0f172a;
+            --admin-card: rgba(15, 23, 42, 0.6);
+            --admin-accent: #A6790A;
+            --glass: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body.admin-mode {
+            background-color: var(--admin-bg);
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('hero2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        #login-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url('hero3.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 40px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .login-card .logo-icon {
+            margin: 0 auto 30px;
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            padding: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .login-card .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .login-card h2 {
+            margin-bottom: 30px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            font-size: 28px;
+            color: #fff;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 18px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .login-card input:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(166, 121, 10, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--accent-color), #8B5E3C);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(166, 121, 10, 0.3);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(166, 121, 10, 0.4);
+        }
+
+        #admin-panel {
+            display: none;
+            padding: 60px 0;
+            flex-grow: 1;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 60px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px 30px;
+            border-radius: 28px;
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            background: rgba(30, 41, 59, 0.6);
+            border-color: var(--accent-color);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, rgba(166, 121, 10, 0.2), rgba(166, 121, 10, 0.1));
+            color: var(--accent-color);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            margin-right: 25px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-info h3 {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .stat-info .value {
+            font-size: 40px;
+            font-weight: 800;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .actions-section {
+            margin-top: 60px;
+            animation: fadeInUp 1s ease;
+        }
+
+        .action-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .action-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            text-decoration: none;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .action-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .action-item i {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover i {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .logout-btn {
+            padding: 12px 25px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .logout-btn:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        #error-msg {
+            color: #ffa3a3;
+            font-size: 14px;
+            margin-top: 20px;
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            padding: 15px 20px;
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        tbody tr {
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        td {
+            padding: 20px;
+            color: #cbd5e1;
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        td:first-child {
+            border-left: 1px solid var(--glass-border);
+            border-radius: 15px 0 0 15px;
+        }
+
+        td:last-child {
+            border-right: 1px solid var(--glass-border);
+            border-radius: 0 15px 15px 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+</head>
+
+<body class="admin-mode">
+
+    <div id="login-gate">
+        <div class="login-card">
+            <div class="logo-icon">
+                <img src="logo.png.png" alt="DinePro Logo">
+            </div>
+            <h2>Admin Login</h2>
+            <input type="password" id="password" placeholder="Enter Password" autofocus>
+            <button class="login-btn" onclick="checkPassword()">Access Dashboard</button>
+            <p id="error-msg">Incorrect password. Please try again.</p>
+            <div style="margin-top: 20px;">
+                <a href="index.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">← Back to
+                    Website</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <div class="container">
+            <div class="dashboard-header">
+                <div>
+                    <h1 style="font-weight: 800; font-size: 32px;">Welcome, Admin</h1>
+                    <p style="color: #94a3b8;">DinePro Advisors Management Portal</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="logout-btn"
+                        style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);"
+                        onclick="clearStats()">Reset Stats</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>Site Visitors</h3>
+                        <div class="value" id="stat-visitors">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="stat-info">
+                        <h3>Messages</h3>
+                        <div class="value" id="stat-messages">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <h3>Bookings</h3>
+                        <div class="value">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <h2 style="margin-bottom: 20px; font-size: 20px;">Recent Contact Messages</h2>
+                <div
+                    style="background: var(--admin-card); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow-x: auto;">
+                    <table style="width: 100%; min-width: 600px; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr
+                                style="background: rgba(255,255,255,0.05); color: #94a3b8; font-size: 13px; text-transform: uppercase;">
+                                <th style="padding: 15px 20px;">Date</th>
+                                <th style="padding: 15px 20px;">Sender</th>
+                                <th style="padding: 15px 20px;">Subject</th>
+                                <th style="padding: 15px 20px;">Message Preview</th>
+                            </tr>
+                        </thead>
+                        <tbody id="message-list">
+                            <!-- Messages injected here -->
+                        </tbody>
+                    </table>
+                    <div id="no-messages" style="padding: 40px; text-align: center; color: #64748b; display: none;">
+                        <i class="fas fa-inbox" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>No messages received yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-section">
+                <h2 style="margin-bottom: 20px; font-size: 20px;">Quick Actions</h2>
+                <div class="action-list">
+                    <a href="https://formspree.io/forms/mbdaqjyv/submissions" target="_blank" class="action-item">
+                        <i class="fas fa-inbox"></i>
+                        <span>Formspree Dashboard (Email Backup)</span>
+                    </a>
+                    <a href="index.html" class="action-item">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Preview Website</span>
+                    </a>
+                </div>
+            </div>
+
+            <footer
+                style="margin-top: 100px; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; background: none !important; border-bottom: none;">
+                <p>&copy; 2026 DinePro Advisors | Secure Admin Portal</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const AUTH_KEY = 'dinepro_admin_session';
+        const PASSWORD = 'dinepro2026';
+
+        function checkPassword() {
+            const passInput = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+
+            if (passInput === PASSWORD) {
+                sessionStorage.setItem(AUTH_KEY, 'true');
+                showPanel();
+                loadStats();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        }
+
+        function showPanel() {
+            document.getElementById('login-gate').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+        }
+
+        function logout() {
+            sessionStorage.removeItem(AUTH_KEY);
+            location.reload();
+        }
+
+        function loadStats() {
+            // Load Visitors
+            const visits = localStorage.getItem('dinepro_visits') || 0;
+            document.getElementById('stat-visitors').innerText = visits;
+
+            // Load Submissions
+            const submissions = JSON.parse(localStorage.getItem('dinepro_submissions') || '[]');
+            document.getElementById('stat-messages').innerText = submissions.length;
+
+            const list = document.getElementById('message-list');
+            const noMsg = document.getElementById('no-messages');
+
+            list.innerHTML = '';
+
+            if (submissions.length === 0) {
+                noMsg.style.display = 'block';
+            } else {
+                noMsg.style.display = 'none';
+                submissions.forEach(sub => {
+                    const row = document.createElement('tr');
+                    row.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                    row.innerHTML = `
+                        <td style="padding: 15px 20px; font-size: 14px; color: #94a3b8;">${sub.date}</td>
+                        <td style="padding: 15px 20px;">
+                            <div style="font-weight: 600;">${sub.name}</div>
+                            <div style="font-size: 12px; color: #94a3b8;">${sub.email}</div>
+                        </td>
+                        <td style="padding: 15px 20px; font-size: 14px;">${sub.subject || 'No Subject'}</td>
+                        <td style="padding: 15px 20px; font-size: 14px; color: #94a3b8; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${sub.message}">
+                            ${sub.message}
+                        </td>
+                    `;
+                    list.appendChild(row);
+                });
+            }
+        }
+
+        function clearStats() {
+            if (confirm('Are you sure you want to reset all local statistics and messages?')) {
+                localStorage.removeItem('dinepro_visits');
+                localStorage.removeItem('dinepro_submissions');
+                loadStats();
+            }
+        }
+
+        // Check session on load
+        window.onload = function () {
+            if (sessionStorage.getItem(AUTH_KEY) === 'true') {
+                showPanel();
+                loadStats();
+            }
+        }
+
+        // Allow Enter key to login
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+
+</html>

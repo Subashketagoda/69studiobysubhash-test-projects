@@ -248,8 +248,9 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; 2026 DinePro Advisors. All Rights Reserved. | Designed By <a
-                        href="https://69studiobysubash.online/" target="_blank"
+                <p>&copy; 2026 DinePro Advisors. <a href="admin.html"
+                        style="color: inherit; text-decoration: none; cursor: default;">All Rights Reserved.</a> |
+                    Designed By <a href="https://69studiobysubash.online/" target="_blank"
                         style="color: var(--accent-color); text-decoration: none; font-weight: 600;">69 Studio by
                         Subhash</a></p>
             </div>
@@ -266,28 +267,42 @@
                 </div>
             </div>
             <div class="chat-body">
-                <div class="chat-card help-center-card">
-                    <h4>Help Center</h4>
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="helpSearch" placeholder="Search for answers">
+                <!-- Home View (default) -->
+                <div id="chatHome">
+                    <div class="chat-card help-center-card">
+                        <h4>Help Center</h4>
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="helpSearch" placeholder="Search for answers">
+                        </div>
+                        <div class="search-results" id="searchResults"></div>
                     </div>
-                    <div class="search-results" id="searchResults"></div>
+                    <div class="chat-card conversation-card" id="startChat">
+                        <div class="card-left">
+                            <h4>New Conversation</h4>
+                            <p>Assistant is online</p>
+                        </div>
+                        <div class="card-right">
+                            <i class="far fa-paper-plane"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="chat-card conversation-card">
-                    <div class="card-left">
-                        <h4>New Conversation</h4>
-                        <p>We typically reply in a few minutes</p>
+
+                <!-- Chat View (initially hidden) -->
+                <div id="chatMessagesView" style="display: none;">
+                    <div class="messages-container" id="messagesContainer">
+                        <!-- Messages will appear here -->
                     </div>
-                    <div class="card-right">
-                        <i class="far fa-paper-plane"></i>
+                    <div class="message-input-area">
+                        <input type="text" id="chatInput" placeholder="Type a message...">
+                        <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
                     </div>
                 </div>
             </div>
             <div class="chat-footer">
                 <div class="footer-icons">
-                    <i class="fas fa-home active"></i>
-                    <i class="far fa-comment-alt"></i>
+                    <i class="fas fa-home active" id="goHome"></i>
+                    <i class="far fa-comment-alt" id="goChat"></i>
                 </div>
                 <div class="powered-by">
                     <img src="https://flagcdn.com/w40/lk.png" alt="Icon" style="width: 35px; margin-right: 8px;">
