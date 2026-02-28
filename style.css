@@ -1287,9 +1287,7 @@ footer {
 
     /* Header & Mobile Nav */
     .top-bar {
-        display: block;
-        padding: 10px 0;
-        background: rgba(10, 14, 23, 0.9);
+        display: none !important;
     }
 
     .top-bar .container {
