@@ -290,3 +290,44 @@ if (contactForm) {
         localStorage.setItem('dinepro_submissions', JSON.stringify(submissions.slice(0, 50))); // Keep last 50
     });
 }
+
+// Secret Admin Access - Type 'admin' on the page to open the panel
+let secretBuffer = '';
+document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+    if (e.key && e.key.length === 1) {
+        secretBuffer += e.key.toLowerCase();
+        if (secretBuffer.length > 5) {
+            secretBuffer = secretBuffer.slice(-5);
+        }
+        if (secretBuffer === 'admin') {
+            // Open admin page
+            window.location.href = atob('YWRtaW4uaHRtbA=='); // decoded: admin.html
+        }
+    }
+});
+
+// Mobile Secret Admin Access - Tap the logo 5 times quickly
+let logoTapCount = 0;
+let logoTapTimer;
+const logos = document.querySelectorAll('.logo');
+
+logos.forEach(logo => {
+    logo.addEventListener('click', function (e) {
+        logoTapCount++;
+
+        clearTimeout(logoTapTimer);
+
+        if (logoTapCount >= 5) {
+            // Open admin page on 5th rapid tap
+            window.location.href = atob('YWRtaW4uaHRtbA=='); // decoded: admin.html
+            logoTapCount = 0; // Reset
+        } else {
+            // Reset tap count if 1 second passes without another tap
+            logoTapTimer = setTimeout(() => {
+                logoTapCount = 0;
+            }, 1000);
+        }
+    });
+});
