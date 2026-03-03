@@ -283,13 +283,8 @@
         <div class="gate-card">
             <img src="logo.png.png" width="80" style="margin-bottom: 20px;">
             <h2>Staff Portal Login</h2>
-            <input type="text" id="gate-name" placeholder="Your Name">
-            <select id="gate-level">
-                <option value="level1">General Staff (Code: 1234)</option>
-                <option value="level2">Management (Code: 5678)</option>
-                <option value="level3">Executive Board (Code: 9999)</option>
-            </select>
-            <input type="password" id="gate-pass" placeholder="Access Code">
+            <input type="text" id="gate-name" placeholder="Your Registered Name">
+            <input type="password" id="gate-pass" placeholder="Personal Password">
             <button class="toggle-btn btn-on" style="width: 100%; justify-content: center;"
                 onclick="portalLogin()">Enter Portal</button>
             <p id="gate-error" style="color: red; display: none; margin-top: 15px;">Invalid access code.</p>
@@ -416,25 +411,41 @@
         // --- Auth Logic ---
         function portalLogin() {
             const name = document.getElementById('gate-name').value.trim();
-            const level = document.getElementById('gate-level').value;
             const pass = document.getElementById('gate-pass').value;
             const error = document.getElementById('gate-error');
 
-            if (!name) { alert("Please enter your name"); return; }
-            if (pass !== ROOM_CONFIG[level].pass) {
-                error.style.display = 'block';
+            if (!name || !pass) { alert("Please enter both name and password"); return; }
+
+            if (typeof window.firebaseDB === 'undefined') {
+                alert("Initializing... Please try again in 2 seconds.");
                 return;
             }
 
-            userData.name = name;
-            userData.level = level;
+            // Sync with Firebase to check credentials
+            const usersRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff/users');
+            window.firebaseOnValue(usersRef, (snapshot) => {
+                const users = snapshot.val();
+                let foundUser = null;
 
-            document.getElementById('user-display').innerText = name;
-            document.getElementById('level-display').innerText = ROOM_CONFIG[level].name;
-            document.getElementById('portal-room-name').innerText = `Team Chat (${ROOM_CONFIG[level].name})`;
-            document.getElementById('portal-gate').style.display = 'none';
+                if (users) {
+                    foundUser = Object.values(users).find(u => u.name.toLowerCase() === name.toLowerCase() && u.pass === pass);
+                }
 
-            initPortalData();
+                if (foundUser) {
+                    userData.name = foundUser.name;
+                    userData.level = foundUser.level;
+
+                    document.getElementById('user-display').innerText = foundUser.name;
+                    document.getElementById('level-display').innerText = foundUser.level.toUpperCase();
+                    document.getElementById('portal-room-name').innerText = `Team Chat (${foundUser.level.toUpperCase()})`;
+                    document.getElementById('portal-gate').style.display = 'none';
+
+                    initPortalData();
+                } else {
+                    error.style.display = 'block';
+                    error.innerText = "Invalid name or personalized password.";
+                }
+            }, { onlyOnce: true });
         }
 
         function switchSection(id, btn) {
