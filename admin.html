@@ -1159,9 +1159,17 @@
                             </span>
                         </td>
                         <td style="padding: 15px 20px; text-align: center;">
-                            <button onclick="deleteBooking('${key}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">
-                                <i class="fas fa-times"></i> Cancel
-                            </button>
+                            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                <button onclick="replyBooking('${booking.email}', '${booking.phone}', '${booking.name}')" style="background: #2563eb; color: white; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px; transition: 0.3s;">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                                <button onclick="confirmBooking('${key}')" style="background: #059669; color: white; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px; transition: 0.3s;">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button onclick="deleteBooking('${key}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 11px;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </td>
                     `;
                     bookingList.appendChild(row);
@@ -1235,6 +1243,27 @@
             if (confirm('Are you sure you want to cancel and delete this booking request?')) {
                 const bookingRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings/' + key);
                 window.firebaseRemove(bookingRef);
+            }
+        }
+
+        function replyBooking(email, phone, name) {
+            const subject = encodeURIComponent("Consultation Booking - DinePro Advisors");
+            const body = encodeURIComponent(`Hi ${name},\n\nThank you for booking a consultation with DinePro Advisors. We've received your request and would like to confirm the details.`);
+
+            const replyMethod = confirm(`How would you like to reply to ${name}?\n\nOK for Email\nCancel for WhatsApp`) ? 'email' : 'whatsapp';
+
+            if (replyMethod === 'email') {
+                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+            } else {
+                const cleanPhone = phone.replace(/\D/g, '');
+                window.open(`https://wa.me/${cleanPhone}?text=${body}`, '_blank');
+            }
+        }
+
+        function confirmBooking(key) {
+            if (confirm('Mark this booking as Confirmed?')) {
+                const bookingRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings/' + key + '/status');
+                window.firebaseSet(bookingRef, 'Confirmed');
             }
         }
 
