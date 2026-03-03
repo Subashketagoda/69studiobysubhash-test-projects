@@ -331,3 +331,127 @@ logos.forEach(logo => {
         }
     });
 });
+
+// Reviews System
+const reviewForm = document.getElementById('reviewForm');
+const reviewsContainer = document.getElementById('reviewsContainer');
+const reviewSuccessMessage = document.getElementById('reviewSuccessMessage');
+
+// Mock initial reviews
+const initialReviews = [
+    {
+        name: "James Anderson",
+        rating: 5,
+        text: "DinePro Advisors completely transformed our restaurant operations. Their staff training program is second to none! Highly recommended.",
+        date: "October 12, 2025"
+    },
+    {
+        name: "Sarah Jenkins",
+        rating: 5,
+        text: "The menu engineering insights helped us increase our profit margins by 15% in just three months. They know their stuff.",
+        date: "November 05, 2025"
+    },
+    {
+        name: "Michael Chen",
+        rating: 4,
+        text: "Very professional team. The operational audit revealed bottlenecks we didn't even know existed. Great value for the consulting fee.",
+        date: "January 20, 2026"
+    }
+];
+
+function loadReviews() {
+    if (!reviewsContainer) return;
+
+    let storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews'));
+
+    // If no reviews in localStorage at all, populate with mock data
+    if (!storedReviews) {
+        storedReviews = initialReviews;
+        localStorage.setItem('dinepro_reviews', JSON.stringify(storedReviews));
+    }
+
+    reviewsContainer.innerHTML = '';
+
+    if (storedReviews.length === 0) {
+        reviewsContainer.innerHTML = '<p style="text-align: center; color: #777; width: 100%; grid-column: 1 / -1;">No reviews yet. Be the first to leave one!</p>';
+        return;
+    }
+
+    storedReviews.forEach(review => {
+        // Simple star rating generator
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= review.rating) {
+                starsHtml += '★';
+            } else {
+                starsHtml += '☆';
+            }
+        }
+
+        let initials = review.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        if (!initials) initials = 'U';
+
+        const reviewHTML = `
+            <div class="review-card fade-in">
+                <div>
+                    <div class="review-stars">${starsHtml}</div>
+                    <div class="review-text">"${review.text}"</div>
+                </div>
+                <div class="reviewer-info">
+                    <div class="reviewer-avatar">${initials}</div>
+                    <div>
+                        <div class="reviewer-name">${review.name}</div>
+                        <div class="reviewer-date">${review.date}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        reviewsContainer.insertAdjacentHTML('beforeend', reviewHTML);
+    });
+}
+
+if (reviewForm) {
+    reviewForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const nameInput = document.getElementById('reviewerName').value;
+        const ratingInput = parseInt(document.getElementById('reviewRating').value);
+        const textInput = document.getElementById('reviewText').value;
+
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const dateString = today.toLocaleDateString('en-US', options);
+
+        const newReview = {
+            name: nameInput,
+            rating: ratingInput,
+            text: textInput,
+            date: dateString
+        };
+
+        const storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews') || '[]');
+        storedReviews.unshift(newReview); // Add to beginning
+        localStorage.setItem('dinepro_reviews', JSON.stringify(storedReviews));
+
+        // Clear form
+        reviewForm.reset();
+
+        // Show success message
+        if (reviewSuccessMessage) {
+            reviewSuccessMessage.style.display = 'block';
+            setTimeout(() => {
+                reviewSuccessMessage.style.display = 'none';
+            }, 4000);
+        }
+
+        // Reload reviews
+        loadReviews();
+    });
+}
+
+// Initial load
+document.addEventListener('DOMContentLoaded', loadReviews);
+// If it's already loaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(loadReviews, 1);
+}
