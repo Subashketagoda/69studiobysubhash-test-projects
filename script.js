@@ -522,8 +522,51 @@ if (reviewForm) {
 // Booking Form Sync with Firebase
 const bookingForm = document.getElementById('bookingForm');
 const bookingSuccessMessage = document.getElementById('bookingSuccessMessage');
+let existingBookings = [];
+
+// Fetch existing bookings to prevent double booking
+function fetchExistingBookings() {
+    if (window.firebaseDB) {
+        const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
+        window.firebaseOnValue(bookingsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                existingBookings = Object.values(data);
+            } else {
+                existingBookings = [];
+            }
+        });
+    }
+}
+
+// Check availability live
+function checkAvailability() {
+    const dateInput = document.getElementById('bookingDate').value;
+    const timeInput = document.getElementById('bookingTime').value;
+    const submitBtn = bookingForm.querySelector('button[type="submit"]');
+
+    if (!dateInput || !timeInput) return;
+
+    const isTaken = existingBookings.some(b => b.date === dateInput && b.time === timeInput);
+
+    if (isTaken) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.innerText = 'Slot Unavailable';
+        submitBtn.style.background = '#888';
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerText = 'Confirm Booking';
+        submitBtn.style.background = 'var(--primary-color)';
+    }
+}
 
 if (bookingForm) {
+    // Check when date or time changes
+    document.getElementById('bookingDate').addEventListener('change', checkAvailability);
+    document.getElementById('bookingTime').addEventListener('change', checkAvailability);
+
     bookingForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -561,7 +604,10 @@ if (bookingForm) {
 }
 
 // Initial load
-document.addEventListener('DOMContentLoaded', loadReviews);
+document.addEventListener('DOMContentLoaded', () => {
+    loadReviews();
+    fetchExistingBookings();
+});
 // If it's already loaded
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     setTimeout(loadReviews, 1);
