@@ -1,13 +1,33 @@
-// Visitor Tracking
-(function trackVisitor() {
-    let visits = localStorage.getItem('dinepro_visits') || 0;
-    // Simple logic: Only count once per session
-    if (!sessionStorage.getItem('counted_visit')) {
-        visits = parseInt(visits) + 1;
-        localStorage.setItem('dinepro_visits', visits);
-        sessionStorage.setItem('counted_visit', 'true');
+// Visitor Tracking with Firebase Sync
+function trackVisitor() {
+    if (typeof window.firebaseDB === 'undefined') {
+        window.addEventListener('firebaseLoaded', trackVisitor);
+        return;
     }
-})();
+
+    const visitsRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats/visits');
+
+    // Only count once per session
+    if (!sessionStorage.getItem('counted_visit')) {
+        window.firebaseOnValue(visitsRef, (snapshot) => {
+            const currentVisits = snapshot.val() || 0;
+            // Use set once to avoid infinite loop since we are in a listener
+            // Better: use a one-time get but onValue is already here
+        }, { onlyOnce: true });
+
+        // Atomic increment (simplification)
+        const visitsCountRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats/visits');
+        // Get current, then increment
+        fetch('https://studio-7cdf1-default-rtdb.firebaseio.com/dinepro/stats/visits.json')
+            .then(res => res.json())
+            .then(val => {
+                const newVal = (val || 0) + 1;
+                window.firebaseSet(visitsCountRef, newVal);
+                sessionStorage.setItem('counted_visit', 'true');
+            });
+    }
+}
+trackVisitor();
 
 // Sticky Header Effect
 window.addEventListener('scroll', function () {
@@ -268,26 +288,31 @@ dropdowns.forEach(dropdown => {
     });
 });
 
-// Contact Form Interception for Local Storage
+// Contact Form Sync with Firebase
 const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', function (e) {
-        // We don't preventDefault() because we want Formspree to still handle the email
-        // But we store a copy locally before it redirects
         const formData = new FormData(this);
         const submission = {
-            id: Date.now(),
             name: formData.get('name'),
             email: formData.get('email'),
             phone: formData.get('phone'),
             subject: formData.get('subject'),
             message: formData.get('message'),
-            date: new Date().toLocaleString()
+            date: new Date().toLocaleString(),
+            timestamp: Date.now()
         };
 
+        // Sync to Firebase if available
+        if (window.firebaseDB) {
+            const submissionsRef = window.firebaseRef(window.firebaseDB, 'dinepro/submissions');
+            window.firebasePush(submissionsRef, submission);
+        }
+
+        // Keep local backup too
         let submissions = JSON.parse(localStorage.getItem('dinepro_submissions') || '[]');
-        submissions.unshift(submission); // Add to the beginning
-        localStorage.setItem('dinepro_submissions', JSON.stringify(submissions.slice(0, 50))); // Keep last 50
+        submissions.unshift(submission);
+        localStorage.setItem('dinepro_submissions', JSON.stringify(submissions.slice(0, 50)));
     });
 }
 
@@ -362,30 +387,47 @@ const initialReviews = [
 function loadReviews() {
     if (!reviewsContainer) return;
 
-    let storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews'));
+    // Show initial mock reviews until Firebase loads
+    const storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews')) || initialReviews;
+    renderReviews(storedReviews);
 
-    // If no reviews in localStorage at all, populate with mock data
-    if (!storedReviews) {
-        storedReviews = initialReviews;
-        localStorage.setItem('dinepro_reviews', JSON.stringify(storedReviews));
+    // Sync from Firebase
+    if (typeof window.firebaseDB === 'undefined') {
+        window.addEventListener('firebaseLoaded', loadReviews);
+        return;
     }
 
+    const reviewsRef = window.firebaseRef(window.firebaseDB, 'dinepro/reviews');
+    window.firebaseOnValue(reviewsRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            // Convert Firebase object to array and sort by timestamp/date
+            const fbReviews = Object.values(data).reverse();
+            renderReviews(fbReviews);
+            // Backup to local
+            localStorage.setItem('dinepro_reviews', JSON.stringify(fbReviews));
+        } else {
+            // If Firebase is empty, use initial and push them once
+            renderReviews(initialReviews);
+            initialReviews.forEach(r => window.firebasePush(reviewsRef, r));
+        }
+    });
+}
+
+function renderReviews(reviews) {
+    if (!reviewsContainer) return;
     reviewsContainer.innerHTML = '';
 
-    if (storedReviews.length === 0) {
+    if (reviews.length === 0) {
         reviewsContainer.innerHTML = '<p style="text-align: center; color: #777; width: 100%; grid-column: 1 / -1;">No reviews yet. Be the first to leave one!</p>';
         return;
     }
 
-    storedReviews.forEach(review => {
-        // Simple star rating generator
+    reviews.forEach(review => {
         let starsHtml = '';
+        const rating = parseInt(review.rating) || 5;
         for (let i = 1; i <= 5; i++) {
-            if (i <= review.rating) {
-                starsHtml += '★';
-            } else {
-                starsHtml += '☆';
-            }
+            starsHtml += i <= rating ? '★' : '☆';
         }
 
         let initials = review.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
@@ -426,12 +468,21 @@ if (reviewForm) {
             name: nameInput,
             rating: ratingInput,
             text: textInput,
-            date: dateString
+            date: dateString,
+            timestamp: Date.now()
         };
 
-        const storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews') || '[]');
-        storedReviews.unshift(newReview); // Add to beginning
-        localStorage.setItem('dinepro_reviews', JSON.stringify(storedReviews));
+        // Sync to Firebase
+        if (window.firebaseDB) {
+            const reviewsRef = window.firebaseRef(window.firebaseDB, 'dinepro/reviews');
+            window.firebasePush(reviewsRef, newReview);
+        } else {
+            // Local fallback
+            const storedReviews = JSON.parse(localStorage.getItem('dinepro_reviews') || '[]');
+            storedReviews.unshift(newReview);
+            localStorage.setItem('dinepro_reviews', JSON.stringify(storedReviews));
+            loadReviews();
+        }
 
         // Clear form
         reviewForm.reset();
@@ -443,9 +494,6 @@ if (reviewForm) {
                 reviewSuccessMessage.style.display = 'none';
             }, 4000);
         }
-
-        // Reload reviews
-        loadReviews();
     });
 }
 
