@@ -784,18 +784,12 @@
                         <div class="value" id="stat-visitors">0</div>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+                <div class="stat-card" style="cursor: pointer;" onclick="openStaffActivityModal()">
+                    <div class="stat-icon" style="background: rgba(5,150,105,0.1); color: #059669;"><i
+                            class="fas fa-user-clock"></i></div>
                     <div class="stat-info">
-                        <h3>Messages</h3>
-                        <div class="value" id="stat-messages">0</div>
-                    </div>
-                </div>
-                <div class="stat-card" style="cursor: pointer;" onclick="openBookingReportModal()">
-                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
-                    <div class="stat-info">
-                        <h3>Bookings</h3>
-                        <div class="value" id="stat-bookings">0</div>
+                        <h3>Staff Active</h3>
+                        <div class="value" id="stat-staff">0</div>
                     </div>
                 </div>
             </div>
@@ -893,6 +887,37 @@
                 style="margin-top: 100px; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; background: none !important; border-bottom: none;">
                 <p>&copy; 2026 DinePro Advisors | Secure Admin Portal </p>
             </footer>
+        </div>
+
+        <!-- Staff Activity Modal -->
+        <div id="staffActivityModal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 900px;">
+                <div class="modal-header">
+                    <h2>Staff Duty & Daily Reports</h2>
+                    <button class="close-modal" onclick="closeModal('staffActivityModal')">&times;</button>
+                </div>
+                <div class="report-grid">
+                    <div class="report-stat-card">
+                        <h4>Currently ON Duty</h4>
+                        <div class="value" id="staff-on-duty-count" style="color: #059669;">0</div>
+                    </div>
+                    <div class="report-stat-card">
+                        <h4>Reports Today</h4>
+                        <div class="value" id="staff-reports-count">0</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px;">
+                        <h4 style="margin-bottom: 15px; color: #94a3b8;">Shift Logs (Today)</h4>
+                        <div id="admin-staff-logs" style="font-size: 13px; max-height: 400px; overflow-y: auto;"></div>
+                    </div>
+                    <div style="background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px;">
+                        <h4 style="margin-bottom: 15px; color: #94a3b8;">Daily Work Reports</h4>
+                        <div id="admin-staff-reports" style="font-size: 13px; max-height: 400px; overflow-y: auto;">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Booking Report Modal -->
@@ -1486,6 +1511,75 @@
             chatBody.insertBefore(msgDiv, typingIndicator);
 
             chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        function openStaffActivityModal() {
+            document.getElementById('staffActivityModal').style.display = 'flex';
+            loadStaffActivity();
+        }
+
+        function loadStaffActivity() {
+            if (typeof window.firebaseDB === 'undefined') return;
+
+            const today = new Date().toISOString().split('T')[0];
+            const staffRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff');
+
+            window.firebaseOnValue(staffRef, (snapshot) => {
+                const data = snapshot.val();
+                const logsContainer = document.getElementById('admin-staff-logs');
+                const reportsContainer = document.getElementById('admin-staff-reports');
+
+                if (!logsContainer || !reportsContainer) return;
+                logsContainer.innerHTML = '';
+                reportsContainer.innerHTML = '';
+
+                let onDutyCount = 0;
+                let reportsCount = 0;
+
+                if (!data) {
+                    logsContainer.innerHTML = '<div style="color: #64748b;">No staff data found.</div>';
+                    reportsContainer.innerHTML = '<div style="color: #64748b;">No reports found.</div>';
+                    return;
+                }
+
+                // Process Attendance
+                if (data.attendance) {
+                    Object.entries(data.attendance).forEach(([name, dates]) => {
+                        if (dates[today]) {
+                            const entries = Object.values(dates[today]);
+                            const last = entries[entries.length - 1];
+                            const statusColor = last.action === 'IN' ? '#059669' : '#94a3b8';
+                            if (last.action === 'IN') onDutyCount++;
+
+                            logsContainer.innerHTML += `
+                                <div style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <strong style="color: ${statusColor}">${name}</strong> - 
+                                    <span style="font-size: 11px;">${last.action} at ${new Date(last.time).toLocaleTimeString()}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                // Process Reports
+                if (data.reports) {
+                    Object.entries(data.reports).forEach(([name, dates]) => {
+                        if (dates[today]) {
+                            reportsCount++;
+                            reportsContainer.innerHTML += `
+                                <div style="padding: 12px; background: rgba(255,255,255,0.03); border-radius: 10px; margin-bottom: 10px; border-left: 3px solid var(--accent-color);">
+                                    <div style="font-weight: 700; margin-bottom: 5px;">${name}</div>
+                                    <div style="font-style: italic; color: #cbd5e1;">"${dates[today].text}"</div>
+                                    <div style="font-size: 10px; color: #64748b; margin-top: 5px;">${new Date(dates[today].timestamp).toLocaleTimeString()}</div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                document.getElementById('staff-on-duty-count').innerText = onDutyCount;
+                document.getElementById('stat-staff').innerText = onDutyCount;
+                document.getElementById('staff-reports-count').innerText = reportsCount;
+            });
         }
     </script>
 </body>
