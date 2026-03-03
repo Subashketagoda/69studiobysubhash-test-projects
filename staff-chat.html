@@ -76,6 +76,7 @@
             font-weight: 800;
             background: linear-gradient(to right, #fff, var(--admin-accent));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin: 0;
             display: flex;
@@ -251,7 +252,8 @@
             font-weight: 800;
         }
 
-        .name-card input {
+        .name-card input,
+        .name-card select {
             width: 100%;
             padding: 15px;
             background: rgba(255, 255, 255, 0.05);
@@ -259,9 +261,31 @@
             border-radius: 15px;
             color: white;
             text-align: center;
-            font-size: 18px;
-            margin-bottom: 25px;
+            font-size: 16px;
+            margin-bottom: 20px;
             outline: none;
+        }
+
+        .name-card select {
+            appearance: none;
+            cursor: pointer;
+            text-align-last: center;
+        }
+
+        .name-card select option {
+            background: var(--admin-bg);
+            color: #fff;
+        }
+
+        .room-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            background: rgba(166, 121, 10, 0.2);
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -270,21 +294,38 @@
 
     <div id="name-gate">
         <div class="name-card">
-            <h2>Enter Your Name</h2>
-            <p style="color: #94a3b8; margin-bottom: 20px;">To start chatting with the staff</p>
-            <input type="text" id="staff-name" placeholder="E.g. Shan D" autofocus>
+            <h2>Staff Portal</h2>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Access your team's discussion room</p>
+
+            <input type="text" id="staff-name" placeholder="Enter Your Name" autofocus>
+
+            <select id="chat-level">
+                <option value="level1">Level 1 - General Staff</option>
+                <option value="level2">Level 2 - Management</option>
+                <option value="level3">Level 3 - Executive Board</option>
+            </select>
+
+            <input type="password" id="staff-pass" placeholder="Access Code">
+
             <button class="send-btn" style="width: 100%; border-radius: 15px; height: 55px; font-weight: 700;"
-                onclick="joinChat()">Start Chatting</button>
+                onclick="joinChat()">Enter Protected Room</button>
+            <p id="auth-error" style="color: #ef4444; font-size: 12px; margin-top: 15px; display: none;">Invalid access
+                code for this level.</p>
         </div>
     </div>
 
     <div class="chat-container">
         <div class="chat-header">
-            <h1><i class="fas fa-comments"></i> Staff Internal Chat</h1>
-            <div style="display: flex; gap: 15px;">
-                <span id="display-name"
-                    style="font-size: 14px; font-weight: 600; color: var(--admin-accent); margin-top: 10px;"></span>
-                <a href="admin.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <h1><i class="fas fa-shield-alt"></i> <span id="room-name">Staff Chat</span></h1>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <div style="text-align: right;">
+                    <div id="display-name" style="font-size: 14px; font-weight: 700; color: #fff;"></div>
+                    <div id="display-level"
+                        style="font-size: 10px; color: var(--admin-accent); font-weight: 800; text-transform: uppercase;">
+                    </div>
+                </div>
+                <button onclick="location.reload()" class="back-btn" style="padding: 8px 15px; font-size: 12px;"><i
+                        class="fas fa-sign-out-alt"></i> Exit</button>
             </div>
         </div>
 
@@ -303,28 +344,39 @@
     <script type="module" src="firebase-init.js"></script>
     <script>
         let currentUser = "";
+        let currentLevel = "level1";
+
+        // Room Configurations
+        const ROOMS = {
+            level1: { name: "General Discussion", color: "#94a3b8", pass: "1234" },
+            level2: { name: "Management Tactical", color: "#2563eb", pass: "5678" },
+            level3: { name: "Executive Strategic", color: "#ef4444", pass: "9999" }
+        };
 
         function joinChat() {
             const name = document.getElementById('staff-name').value.trim();
-            if (name) {
-                currentUser = name;
-                document.getElementById('display-name').innerText = "Logged in as: " + name;
-                document.getElementById('name-gate').style.display = 'none';
-                sessionStorage.setItem('staffName', name);
-                initChatSync();
-            }
-        }
+            const level = document.getElementById('chat-level').value;
+            const pass = document.getElementById('staff-pass').value;
+            const errorEl = document.getElementById('auth-error');
 
-        // Check for existing session
-        window.onload = () => {
-            const savedName = sessionStorage.getItem('staffName');
-            if (savedName) {
-                currentUser = savedName;
-                document.getElementById('display-name').innerText = "Logged in as: " + savedName;
-                document.getElementById('name-gate').style.display = 'none';
-                initChatSync();
+            if (!name) return;
+
+            // Password Check
+            if (pass !== ROOMS[level].pass) {
+                errorEl.style.display = 'block';
+                return;
             }
-        };
+
+            currentUser = name;
+            currentLevel = level;
+
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('display-level').innerText = ROOMS[level].name;
+            document.getElementById('room-name').innerText = ROOMS[level].name;
+            document.getElementById('name-gate').style.display = 'none';
+
+            initChatSync();
+        }
 
         function initChatSync() {
             if (typeof window.firebaseDB === 'undefined') {
@@ -332,7 +384,7 @@
                 return;
             }
 
-            const chatRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff_chat');
+            const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${currentLevel}`);
             window.firebaseOnValue(chatRef, (snapshot) => {
                 const data = snapshot.val();
                 const container = document.getElementById('chat-messages');
@@ -363,7 +415,7 @@
             const text = input.value.trim();
 
             if (text && window.firebaseDB) {
-                const chatRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff_chat');
+                const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${currentLevel}`);
                 window.firebasePush(chatRef, {
                     user: currentUser,
                     text: text,
@@ -376,10 +428,6 @@
         // Enter key to send
         document.getElementById('message-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
-        });
-
-        document.getElementById('staff-name').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') joinChat();
         });
     </script>
 </body>
