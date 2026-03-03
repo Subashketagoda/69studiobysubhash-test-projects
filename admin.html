@@ -908,6 +908,10 @@
                     <input type="password" id="newStaffPass" placeholder="Personal Password" required
                         style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white;">
                 </div>
+                <div style="margin-bottom: 10px;">
+                    <input type="url" id="newStaffPhoto" placeholder="Profile Photo URL (Optional)"
+                        style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white;">
+                </div>
                 <div style="display: flex; gap: 10px;">
                     <select id="newStaffLevel"
                         style="flex-grow: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white;">
@@ -1641,9 +1645,13 @@
                     return;
                 }
                 Object.entries(data).forEach(([key, user]) => {
+                    const photo = user.photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png';
                     const row = document.createElement('tr');
                     row.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
                     row.innerHTML = `
+                        <td style="padding: 10px; width: 50px;">
+                            <img src="${photo}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color);">
+                        </td>
                         <td style="padding: 10px;">
                             <div style="font-weight: 600;">${user.name}</div>
                             <div style="font-size: 10px; color: var(--accent-color); font-weight: 700; text-transform: uppercase;">${user.level}</div>
@@ -1663,11 +1671,17 @@
                 e.preventDefault();
                 const name = document.getElementById('newStaffName').value.trim();
                 const pass = document.getElementById('newStaffPass').value.trim();
+                const photo = document.getElementById('newStaffPhoto').value.trim();
                 const level = document.getElementById('newStaffLevel').value;
 
                 if (window.firebaseDB) {
                     const staffRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff/users');
-                    window.firebasePush(staffRef, { name, pass, level });
+                    window.firebasePush(staffRef, {
+                        name,
+                        pass,
+                        level,
+                        photo: photo || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'
+                    });
                     alert('Staff member added successfully!');
                     addStaffForm.reset();
                 }
