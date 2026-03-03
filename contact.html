@@ -118,8 +118,14 @@
                     </div>
                 </div>
 
+                <div class="form-toggle-wrapper">
+                    <button class="toggle-form-btn" onclick="toggleForm('contactCollapsible', this)">
+                        <i class="fas fa-envelope-open-text"></i> Send Us a Message
+                    </button>
+                </div>
+
                 <!-- Contact Form -->
-                <div class="contact-form-container">
+                <div class="contact-form-container form-collapsible" id="contactCollapsible">
                     <form action="https://formspree.io/f/mbdaqjyv" method="POST" id="contactForm"
                         class="futuristic-form">
                         <div class="form-row">

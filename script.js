@@ -257,6 +257,28 @@ if (prevBtn) {
 // Start auto-slide
 startSlideTimer();
 
+// Global Toggle Form Function
+function toggleForm(containerId, btn) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.classList.toggle('active');
+    btn.classList.toggle('active');
+
+    if (container.classList.contains('active')) {
+        btn.innerHTML = `<i class="fas fa-times"></i> Close Form`;
+    } else {
+        // Dynamic labels based on ID for better UX
+        if (containerId === 'bookingCollapsible') {
+            btn.innerHTML = `<i class="fas fa-calendar-plus"></i> Open Booking Form`;
+        } else if (containerId === 'reviewCollapsible') {
+            btn.innerHTML = `<i class="fas fa-pen-fancy"></i> Write a Review`;
+        } else if (containerId === 'contactCollapsible') {
+            btn.innerHTML = `<i class="fas fa-envelope-open-text"></i> Send Us a Message`;
+        }
+    }
+}
+
 // Mobile Menu Logic
 const mobileToggle = document.querySelector('.mobile-toggle');
 const navLinks = document.querySelector('.nav-links');

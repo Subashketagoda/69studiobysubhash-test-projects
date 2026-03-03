@@ -196,7 +196,13 @@
                 <div class="divider"></div>
             </div>
 
-            <div class="booking-container">
+            <div class="form-toggle-wrapper">
+                <button class="toggle-form-btn" onclick="toggleForm('bookingCollapsible', this)">
+                    <i class="fas fa-calendar-plus"></i> Open Booking Form
+                </button>
+            </div>
+
+            <div class="booking-container form-collapsible" id="bookingCollapsible">
                 <div class="booking-form-wrapper fade-in">
                     <form id="bookingForm" class="futuristic-form">
                         <div class="form-row half-grid">
@@ -273,7 +279,13 @@
                 <!-- Reviews will be loaded here dynamically -->
             </div>
 
-            <div class="add-review-form">
+            <div class="form-toggle-wrapper">
+                <button class="toggle-form-btn" onclick="toggleForm('reviewCollapsible', this)">
+                    <i class="fas fa-pen-fancy"></i> Write a Review
+                </button>
+            </div>
+
+            <div class="add-review-form form-collapsible" id="reviewCollapsible">
                 <div class="form-header">
                     <h3>Leave a Review</h3>
                     <p>Share your experience with us</p>
