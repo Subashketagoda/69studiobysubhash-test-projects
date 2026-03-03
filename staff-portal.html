@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | DinePro Advisors</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-bg: #0f172a;
+            --admin-card: rgba(15, 23, 42, 0.6);
+            --admin-accent: #A6790A;
+            --glass: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #059669;
+            --danger: #dc2626;
+        }
+
+        body.portal-mode {
+            background-color: var(--admin-bg);
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('hero2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+        }
+
+        .portal-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .portal-sidebar {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .sidebar-logo {
+            text-align: center;
+        }
+
+        .sidebar-logo img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(166, 121, 10, 0.1);
+            color: var(--admin-accent);
+        }
+
+        .nav-item.active {
+            background: var(--admin-accent);
+            color: white;
+            box-shadow: 0 10px 20px rgba(166, 121, 10, 0.2);
+        }
+
+        /* Main Content */
+        .portal-main {
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Dashboard Cards */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 30px;
+        }
+
+        .duty-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-btn {
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .btn-on {
+            background: var(--success);
+        }
+
+        .btn-off {
+            background: var(--danger);
+        }
+
+        /* Forms */
+        .portal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .portal-form textarea,
+        .portal-form input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            outline: none;
+        }
+
+        /* Chat Integration */
+        .chat-frame {
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--glass);
+            border-radius: 25px;
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .chat-msgs-area {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-input-row {
+            padding: 20px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Name Gate */
+        #portal-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--admin-bg);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gate-card {
+            background: var(--glass);
+            padding: 50px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .gate-card input,
+        .gate-card select {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .msg-bubble {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 14px;
+        }
+
+        .msg-bubble.sent {
+            align-self: flex-end;
+            background: var(--admin-accent);
+        }
+
+        .msg-bubble.received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .portal-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .portal-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="portal-mode">
+
+    <!-- Auth Gate -->
+    <div id="portal-gate">
+        <div class="gate-card">
+            <img src="logo.png.png" width="80" style="margin-bottom: 20px;">
+            <h2>Staff Portal Login</h2>
+            <input type="text" id="gate-name" placeholder="Your Name">
+            <select id="gate-level">
+                <option value="level1">General Staff (Code: 1234)</option>
+                <option value="level2">Management (Code: 5678)</option>
+                <option value="level3">Executive Board (Code: 9999)</option>
+            </select>
+            <input type="password" id="gate-pass" placeholder="Access Code">
+            <button class="toggle-btn btn-on" style="width: 100%; justify-content: center;"
+                onclick="portalLogin()">Enter Portal</button>
+            <p id="gate-error" style="color: red; display: none; margin-top: 15px;">Invalid access code.</p>
+        </div>
+    </div>
+
+    <div class="portal-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="portal-sidebar">
+            <div class="sidebar-logo">
+                <img src="logo.png.png" alt="Logo">
+                <h3 id="user-display" style="margin: 0; font-size: 16px;">Staff Member</h3>
+                <span id="level-display"
+                    style="font-size: 10px; color: var(--admin-accent); font-weight: 800; text-transform: uppercase;">LEVEL
+                    1</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-item active" onclick="switchSection('dashboard', this)">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </div>
+                <div class="nav-item" onclick="switchSection('daily-report', this)">
+                    <i class="fas fa-file-alt"></i> Daily Work Report
+                </div>
+                <div class="nav-item" onclick="switchSection('chat-room', this)">
+                    <i class="fas fa-comments"></i> Team Chat
+                </div>
+                <div class="nav-item" style="margin-top: auto; color: var(--danger);" onclick="location.reload()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="portal-main">
+
+            <!-- 1. Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h1 style="margin-bottom: 30px;">Member Dashboard</h1>
+
+                <div class="status-grid">
+                    <div class="card duty-status">
+                        <div>
+                            <h4 style="color: #94a3b8; margin: 0;">Duty Status</h4>
+                            <h2 id="duty-text" style="margin: 10px 0;">OFF DUTY</h2>
+                        </div>
+                        <button id="duty-toggle" class="toggle-btn btn-on" onclick="toggleDuty()">
+                            <i class="fas fa-power-off"></i> Clock In
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="color: #94a3b8; margin: 0 0 15px 0;">Active Session</h4>
+                        <div id="duty-timer" style="font-size: 28px; font-weight: 800;">00:00:00</div>
+                        <p id="duty-log-text" style="font-size: 12px; color: #94a3b8; margin-top: 10px;">Not clocked in
+                            today.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2 style="margin-bottom: 20px;">Your Attendance History (Today)</h2>
+                    <div id="attendance-list" style="font-size: 14px; color: #cbd5e1;">
+                        No logs yet.
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Daily Report Section -->
+            <section id="daily-report" class="content-section">
+                <h1 style="margin-bottom: 30px;">Submit Daily Task Report</h1>
+                <div class="card" style="max-width: 600px;">
+                    <form id="report-form" class="portal-form">
+                        <div class="form-group">
+                            <label style="display: block; margin-bottom: 10px; font-size: 14px;">What did you do
+                                today?</label>
+                            <textarea id="report-text" rows="8"
+                                placeholder="List your completed tasks and achievements..."></textarea>
+                        </div>
+                        <button type="submit" class="toggle-btn btn-on"
+                            style="width: 100%; justify-content: center;">Submit Daily Report</button>
+                    </form>
+                    <div id="report-success"
+                        style="margin-top: 20px; color: var(--success); display: none; text-align: center; font-weight: 700;">
+                        <i class="fas fa-check-circle"></i> Report submitted successfully!
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Chat Room Section -->
+            <section id="chat-room" class="content-section">
+                <h1 style="margin-bottom: 30px;" id="portal-room-name">Team Chat (Level 1)</h1>
+                <div class="chat-frame">
+                    <div class="chat-msgs-area" id="portal-chat-area">
+                        <!-- Messages Injected -->
+                    </div>
+                    <div class="chat-input-row">
+                        <input type="text" id="portal-chat-input" class="chat-input" placeholder="Type a message...">
+                        <button class="send-btn" onclick="sendPortalMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Firebase -->
+    <script type="module" src="firebase-init.js"></script>
+    <script>
+        let userData = {
+            name: "",
+            level: "level1",
+            isOnDuty: false,
+            clockInTime: null
+        };
+
+        const ROOM_CONFIG = {
+            level1: { name: "General Staff", pass: "1234" },
+            level2: { name: "Management", pass: "5678" },
+            level3: { name: "Executive Board", pass: "9999" }
+        };
+
+        // --- Auth Logic ---
+        function portalLogin() {
+            const name = document.getElementById('gate-name').value.trim();
+            const level = document.getElementById('gate-level').value;
+            const pass = document.getElementById('gate-pass').value;
+            const error = document.getElementById('gate-error');
+
+            if (!name) { alert("Please enter your name"); return; }
+            if (pass !== ROOM_CONFIG[level].pass) {
+                error.style.display = 'block';
+                return;
+            }
+
+            userData.name = name;
+            userData.level = level;
+
+            document.getElementById('user-display').innerText = name;
+            document.getElementById('level-display').innerText = ROOM_CONFIG[level].name;
+            document.getElementById('portal-room-name').innerText = `Team Chat (${ROOM_CONFIG[level].name})`;
+            document.getElementById('portal-gate').style.display = 'none';
+
+            initPortalData();
+        }
+
+        function switchSection(id, btn) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // --- Duty / Attendance Logic ---
+        function initPortalData() {
+            if (typeof window.firebaseDB === 'undefined') {
+                window.addEventListener('firebaseLoaded', initPortalData);
+                return;
+            }
+            initChatSync();
+            fetchDutyStatus();
+        }
+
+        function toggleDuty() {
+            const today = new Date().toISOString().split('T')[0];
+            const timestamp = Date.now();
+            const logRef = window.firebaseRef(window.firebaseDB, `dinepro/staff/attendance/${userData.name}/${today}`);
+
+            if (!userData.isOnDuty) {
+                // Clocking IN
+                window.firebasePush(logRef, { action: 'IN', time: timestamp });
+                userData.isOnDuty = true;
+                userData.clockInTime = timestamp;
+                updateDutyUI(true);
+            } else {
+                // Clocking OUT
+                window.firebasePush(logRef, { action: 'OUT', time: timestamp });
+                userData.isOnDuty = false;
+                userData.clockInTime = null;
+                updateDutyUI(false);
+            }
+        }
+
+        function fetchDutyStatus() {
+            const today = new Date().toISOString().split('T')[0];
+            const logRef = window.firebaseRef(window.firebaseDB, `dinepro/staff/attendance/${userData.name}/${today}`);
+
+            window.firebaseOnValue(logRef, (snapshot) => {
+                const logs = snapshot.val();
+                const list = document.getElementById('attendance-list');
+                list.innerHTML = '';
+
+                if (logs) {
+                    const entries = Object.values(logs);
+                    entries.forEach(log => {
+                        const timeStr = new Date(log.time).toLocaleTimeString();
+                        list.innerHTML += `<div style="margin-bottom: 5px;">• ${log.action} at ${timeStr}</div>`;
+                    });
+
+                    // Set current status based on last entry
+                    const last = entries[entries.length - 1];
+                    if (last.action === 'IN') {
+                        userData.isOnDuty = true;
+                        userData.clockInTime = last.time;
+                        updateDutyUI(true);
+                    } else {
+                        userData.isOnDuty = false;
+                        updateDutyUI(false);
+                    }
+                }
+            });
+        }
+
+        function updateDutyUI(isOn) {
+            const btn = document.getElementById('duty-toggle');
+            const text = document.getElementById('duty-text');
+            if (isOn) {
+                text.innerText = 'ON DUTY';
+                text.style.color = 'var(--success)';
+                btn.className = 'toggle-btn btn-off';
+                btn.innerHTML = '<i class="fas fa-power-off"></i> Clock Out';
+            } else {
+                text.innerText = 'OFF DUTY';
+                text.style.color = 'var(--danger)';
+                btn.className = 'toggle-btn btn-on';
+                btn.innerHTML = '<i class="fas fa-power-off"></i> Clock In';
+                document.getElementById('duty-timer').innerText = '00:00:00';
+            }
+        }
+
+        // Timer Logic
+        setInterval(() => {
+            if (userData.isOnDuty && userData.clockInTime) {
+                const diff = Date.now() - userData.clockInTime;
+                const hrs = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                const mins = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                const secs = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                document.getElementById('duty-timer').innerText = `${hrs}:${mins}:${secs}`;
+            }
+        }, 1000);
+
+        // --- Daily Report Logic ---
+        document.getElementById('report-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = document.getElementById('report-text').value.trim();
+            if (!text) return;
+
+            const today = new Date().toISOString().split('T')[0];
+            const reportRef = window.firebaseRef(window.firebaseDB, `dinepro/staff/reports/${userData.name}/${today}`);
+
+            window.firebaseSet(reportRef, {
+                text: text,
+                timestamp: Date.now(),
+                level: userData.level
+            }).then(() => {
+                document.getElementById('report-text').value = '';
+                document.getElementById('report-success').style.display = 'block';
+                setTimeout(() => document.getElementById('report-success').style.display = 'none', 3000);
+            });
+        });
+
+        // --- Chat Logic ---
+        function initChatSync() {
+            const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${userData.level}`);
+            window.firebaseOnValue(chatRef, (snapshot) => {
+                const data = snapshot.val();
+                const area = document.getElementById('portal-chat-area');
+                area.innerHTML = '';
+                if (data) {
+                    Object.values(data).forEach(m => {
+                        const isSent = m.user === userData.name;
+                        const bubble = document.createElement('div');
+                        bubble.className = `msg-bubble ${isSent ? 'sent' : 'received'}`;
+                        bubble.innerHTML = `
+                            ${!isSent ? `<div style="font-size: 10px; font-weight: 700; margin-bottom: 4px; opacity: 0.7;">${m.user}</div>` : ''}
+                            <div>${m.text}</div>
+                        `;
+                        area.appendChild(bubble);
+                    });
+                    area.scrollTop = area.scrollHeight;
+                }
+            });
+        }
+
+        function sendPortalMessage() {
+            const input = document.getElementById('portal-chat-input');
+            const text = input.value.trim();
+            if (text && window.firebaseDB) {
+                const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${userData.level}`);
+                window.firebasePush(chatRef, {
+                    user: userData.name,
+                    text: text,
+                    timestamp: Date.now()
+                });
+                input.value = '';
+            }
+        }
+
+        document.getElementById('portal-chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendPortalMessage();
+        });
+    </script>
+</body>
+
+</html>
