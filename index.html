@@ -64,6 +64,7 @@
                             <li><a href="#services">Operations Review</a></li>
                         </ul>
                     </li>
+                    <li><a href="#booking">BOOKING</a></li>
                     <li><a href="contact.html">CONTACT US</a></li>
                 </ul>
                 <div class="mobile-toggle">
@@ -86,8 +87,7 @@
                     <p>Expert consulting to elevate your restaurant operations and guest experience.</p>
                     <div class="hero-btns">
                         <a href="#services" class="btn btn-primary">Our Services</a>
-                        <a href="https://wa.me/94761210164?text=Hello Globe Hospitality! I would like to book a free consultation."
-                            class="btn btn-outline">Free Consultation</a>
+                        <a href="#booking" class="btn btn-outline">Free Consultation</a>
                     </div>
                 </div>
             </div>
@@ -182,6 +182,79 @@
                         <h3>Operational Audit</h3>
                         <p>Deep dive into your existing operations to identify inefficiencies and growth areas.</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section id="booking" class="booking-section section-padding" style="background: var(--light-gray);">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tagline">SCHEDULE A CONSULTATION</span>
+                <h2>Book Your Expert Strategy Session</h2>
+                <div class="divider"></div>
+            </div>
+
+            <div class="booking-container">
+                <div class="booking-form-wrapper fade-in">
+                    <form id="bookingForm" class="futuristic-form">
+                        <div class="form-row half-grid">
+                            <div class="form-group">
+                                <label for="bookingName">Full Name</label>
+                                <input type="text" id="bookingName" placeholder="Enter your name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingEmail">Email Address</label>
+                                <input type="email" id="bookingEmail" placeholder="Enter your email" required>
+                            </div>
+                        </div>
+                        <div class="form-row half-grid">
+                            <div class="form-group">
+                                <label for="bookingPhone">Phone Number</label>
+                                <input type="tel" id="bookingPhone" placeholder="Enter your phone" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingService">Consultation Service</label>
+                                <select id="bookingService" required>
+                                    <option value="" disabled selected>Select a Service</option>
+                                    <option value="Concept Development">Concept Development</option>
+                                    <option value="Menu Engineering">Menu Engineering</option>
+                                    <option value="Staff Training">Staff Training</option>
+                                    <option value="Operational Audit">Operational Audit</option>
+                                    <option value="Other">Other Consultation</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row half-grid">
+                            <div class="form-group">
+                                <label for="bookingDate">Preferred Date</label>
+                                <input type="date" id="bookingDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="bookingTime">Preferred Time</label>
+                                <select id="bookingTime" required>
+                                    <option value="" disabled selected>Select Time</option>
+                                    <option value="Morning (9 AM - 12 PM)">Morning (9 AM - 12 PM)</option>
+                                    <option value="Afternoon (1 PM - 5 PM)">Afternoon (1 PM - 5 PM)</option>
+                                    <option value="Evening (6 PM - 9 PM)">Evening (6 PM - 9 PM)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="bookingMessage">Additional Requirements</label>
+                            <textarea id="bookingMessage" rows="4" placeholder="How can we help you?"></textarea>
+                        </div>
+                        <div class="form-submit" style="text-align: center; margin-top: 30px;">
+                            <button type="submit" class="btn btn-primary"
+                                style="width: 100%; max-width: 300px; padding: 18px;">Confirm Booking</button>
+                        </div>
+                        <div id="bookingSuccessMessage"
+                            style="display:none; color: #A6790A; margin-top: 20px; text-align: center; font-weight: 700; background: rgba(166, 121, 10, 0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(166, 121, 10, 0.2);">
+                            <i class="fas fa-check-circle" style="margin-right: 8px;"></i> Your booking request has been
+                            sent! We will contact you soon.
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

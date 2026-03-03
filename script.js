@@ -497,6 +497,47 @@ if (reviewForm) {
     });
 }
 
+// Booking Form Sync with Firebase
+const bookingForm = document.getElementById('bookingForm');
+const bookingSuccessMessage = document.getElementById('bookingSuccessMessage');
+
+if (bookingForm) {
+    bookingForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const bookingData = {
+            name: document.getElementById('bookingName').value,
+            email: document.getElementById('bookingEmail').value,
+            phone: document.getElementById('bookingPhone').value,
+            service: document.getElementById('bookingService').value,
+            date: document.getElementById('bookingDate').value,
+            time: document.getElementById('bookingTime').value,
+            message: document.getElementById('bookingMessage').value,
+            timestamp: Date.now(),
+            status: 'Pending'
+        };
+
+        // Sync to Firebase
+        if (window.firebaseDB) {
+            const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
+            window.firebasePush(bookingsRef, bookingData);
+        } else {
+            console.error("Firebase not loaded yet");
+        }
+
+        // Clear form
+        bookingForm.reset();
+
+        // Show success message
+        if (bookingSuccessMessage) {
+            bookingSuccessMessage.style.display = 'block';
+            setTimeout(() => {
+                bookingSuccessMessage.style.display = 'none';
+            }, 5000);
+        }
+    });
+}
+
 // Initial load
 document.addEventListener('DOMContentLoaded', loadReviews);
 // If it's already loaded

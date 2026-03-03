@@ -1631,3 +1631,75 @@ footer {
         padding: 25px;
     }
 }
+
+/* Booking Section Styles */
+.booking-container {
+    max-width: 900px;
+    margin: 40px auto 0;
+}
+
+.booking-form-wrapper {
+    background: var(--white);
+    padding: 60px;
+    border-radius: 40px;
+    box-shadow: 0 30px 60px rgba(93, 58, 26, 0.08);
+    border: 1px solid var(--glass-border);
+}
+
+.half-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 768px) {
+    .half-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .booking-form-wrapper {
+        padding: 30px 20px;
+    }
+}
+
+.booking-section .form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.booking-section .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.booking-section .form-group input,
+.booking-section .form-group select,
+.booking-section .form-group textarea {
+    width: 100%;
+    padding: 18px 25px;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    background: #fdfdfd;
+    transition: var(--transition);
+    outline: none;
+    color: var(--text-color);
+}
+
+.booking-section .form-group input:focus,
+.booking-section .form-group select:focus,
+.booking-section .form-group textarea:focus {
+    border-color: var(--accent-color);
+    background: white;
+    box-shadow: 0 10px 20px rgba(166, 121, 10, 0.05);
+}
+
+.booking-section .form-group textarea {
+    resize: vertical;
+}

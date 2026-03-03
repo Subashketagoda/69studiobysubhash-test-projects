@@ -676,7 +676,7 @@
                     <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
                     <div class="stat-info">
                         <h3>Bookings</h3>
-                        <div class="value">0</div>
+                        <div class="value" id="stat-bookings">0</div>
                     </div>
                 </div>
             </div>
@@ -732,7 +732,32 @@
             </div>
 
             <div class="actions-section">
-                <h2 style="margin-bottom: 20px; font-size: 20px;">Quick Actions</h2>
+                <h2 style="margin-bottom: 20px; font-size: 20px;">Recent Consulting Bookings</h2>
+                <div
+                    style="background: var(--admin-card); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow-x: auto;">
+                    <table style="width: 100%; min-width: 800px; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr
+                                style="background: rgba(255,255,255,0.05); color: #94a3b8; font-size: 13px; text-transform: uppercase;">
+                                <th style="padding: 15px 20px;">Date & Time</th>
+                                <th style="padding: 15px 20px;">Client</th>
+                                <th style="padding: 15px 20px;">Service</th>
+                                <th style="padding: 15px 20px;">Status</th>
+                                <th style="padding: 15px 20px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-booking-list">
+                            <!-- Bookings injected here -->
+                        </tbody>
+                    </table>
+                    <div id="no-bookings" style="padding: 40px; text-align: center; color: #64748b; display: none;">
+                        <i class="fas fa-calendar-alt" style="font-size: 40px; margin-bottom: 15px; opacity: 0.3;"></i>
+                        <p>No booking requests yet.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions-section">
                 <div class="action-list">
                     <a href="https://formspree.io/forms/mbdaqjyv/submissions" target="_blank" class="action-item">
                         <i class="fas fa-inbox"></i>
@@ -876,6 +901,55 @@
                 });
             });
 
+            // Load Bookings from Firebase
+            const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
+            window.firebaseOnValue(bookingsRef, (snapshot) => {
+                const data = snapshot.val();
+                const bookingList = document.getElementById('admin-booking-list');
+                const noBookings = document.getElementById('no-bookings');
+
+                if (!bookingList) return;
+                bookingList.innerHTML = '';
+
+                if (!data) {
+                    noBookings.style.display = 'block';
+                    document.getElementById('stat-bookings').innerText = 0;
+                    return;
+                }
+
+                noBookings.style.display = 'none';
+                const bookings = Object.entries(data).reverse();
+                document.getElementById('stat-bookings').innerText = bookings.length;
+
+                bookings.forEach(([key, booking]) => {
+                    const row = document.createElement('tr');
+                    row.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                    row.innerHTML = `
+                        <td style="padding: 15px 20px;">
+                            <div style="font-weight: 600;">${booking.date}</div>
+                            <div style="font-size: 12px; color: #94a3b8;">${booking.time}</div>
+                        </td>
+                        <td style="padding: 15px 20px;">
+                            <div style="font-weight: 600;">${booking.name}</div>
+                            <div style="font-size: 12px; color: #94a3b8;">${booking.email}</div>
+                            <div style="font-size: 12px; color: #cbd5e1; margin-top: 4px;"><i class="fas fa-phone" style="font-size: 10px; opacity: 0.7; margin-right: 4px;"></i>${booking.phone}</div>
+                        </td>
+                        <td style="padding: 15px 20px; font-size: 14px;">${booking.service}</td>
+                        <td style="padding: 15px 20px;">
+                            <span style="background: rgba(166, 121, 10, 0.1); color: var(--accent-color); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; border: 1px solid rgba(166, 121, 10, 0.2);">
+                                ${booking.status || 'Pending'}
+                            </span>
+                        </td>
+                        <td style="padding: 15px 20px; text-align: center;">
+                            <button onclick="deleteBooking('${key}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </td>
+                    `;
+                    bookingList.appendChild(row);
+                });
+            });
+
             // Load Reviews from Firebase
             const reviewsRef = window.firebaseRef(window.firebaseDB, 'dinepro/reviews');
             window.firebaseOnValue(reviewsRef, (snapshot) => {
@@ -939,12 +1013,21 @@
             }
         }
 
+        function deleteBooking(key) {
+            if (confirm('Are you sure you want to cancel and delete this booking request?')) {
+                const bookingRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings/' + key);
+                window.firebaseRemove(bookingRef);
+            }
+        }
+
         function clearStats() {
-            if (confirm('Are you sure you want to reset all global statistics and messages? This will affect ALL devices.')) {
+            if (confirm('Are you sure you want to reset all global statistics, messages, and bookings? This will affect ALL devices.')) {
                 const statsRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats');
                 const subsRef = window.firebaseRef(window.firebaseDB, 'dinepro/submissions');
+                const bookRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
                 window.firebaseSet(statsRef, { visits: 0 });
                 window.firebaseRemove(subsRef);
+                window.firebaseRemove(bookRef);
             }
         }
 
