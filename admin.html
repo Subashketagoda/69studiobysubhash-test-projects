@@ -1263,6 +1263,33 @@
                                         </table>
                                     </div>
                                 </div>
+
+                                <div class="admin-card" style="margin-top: 40px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                                        <h3 style="margin: 0; font-size: 18px; color: var(--accent-color);">Team
+                                            Communications</h3>
+                                        <select id="admin-chat-level-select" onchange="loadAdminChat()"
+                                            style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 8px; color: white; font-size: 12px; outline: none;">
+                                            <option value="level1">General Staff</option>
+                                            <option value="level2">Management</option>
+                                            <option value="level3">Executive Board</option>
+                                        </select>
+                                    </div>
+                                    <div id="admin-chat-area"
+                                        style="height: 350px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;">
+                                        <!-- Messages will appear here -->
+                                    </div>
+                                    <div
+                                        style="display: flex; gap: 10px; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                        <input type="text" id="admin-chat-input" placeholder="Broadcast to team..."
+                                            style="flex-grow: 1; background: transparent; border: none; color: white; outline: none; font-size: 14px;">
+                                        <button onclick="sendAdminChatMessage()"
+                                            style="background: var(--accent-color); border: none; color: white; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Column 2: Activity & Monitoring -->
@@ -1541,6 +1568,7 @@
             } else if (sectionId === 'staff-hub') {
                 title.innerText = 'Staff Central Hub';
                 subtitle.innerText = 'Manage your team and client inquiries';
+                loadAdminChat();
             } else if (sectionId === 'analytics') {
                 title.innerText = 'Data & Growth Analytics';
                 subtitle.innerText = 'Visualize your business trajectory';
@@ -2313,9 +2341,79 @@
             }
         }
 
+        // Admin Chat Implementation
+        let adminChatListener = null;
+        function loadAdminChat() {
+            if (typeof window.firebaseDB === 'undefined') {
+                window.addEventListener('firebaseLoaded', () => loadAdminChat(), { once: true });
+                return;
+            }
+
+            const level = document.getElementById('admin-chat-level-select').value;
+            const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${level}`);
+
+            // Clear existing listener if any
+            if (adminChatListener) {
+                // Potentially unsubscribe logic here if needed, but onValue handles it if we reuse
+            }
+
+            window.firebaseOnValue(chatRef, (snapshot) => {
+                const data = snapshot.val();
+                const area = document.getElementById('admin-chat-area');
+                area.innerHTML = '';
+
+                if (!data) {
+                    area.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; margin-top: 100px;">No messages in this room yet.</div>';
+                    return;
+                }
+
+                Object.values(data).forEach(msg => {
+                    const bubble = document.createElement('div');
+                    const isAdmin = msg.user === 'Admin';
+
+                    bubble.style.background = isAdmin ? 'var(--accent-color)' : 'rgba(255,255,255,0.05)';
+                    bubble.style.padding = '10px 15px';
+                    bubble.style.borderRadius = '15px';
+                    bubble.style.maxWidth = '85%';
+                    bubble.style.alignSelf = isAdmin ? 'flex-end' : 'flex-start';
+                    bubble.style.fontSize = '13px';
+
+                    bubble.innerHTML = `
+                        <div style="font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 4px; text-transform: uppercase;">${msg.user}</div>
+                        <div>${msg.text}</div>
+                    `;
+                    area.appendChild(bubble);
+                });
+                area.scrollTop = area.scrollHeight;
+            });
+        }
+
+        function sendAdminChatMessage() {
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            const level = document.getElementById('admin-chat-level-select').value;
+
+            if (text && window.firebaseDB) {
+                const chatRef = window.firebaseRef(window.firebaseDB, `dinepro/chat/${level}`);
+                window.firebasePush(chatRef, {
+                    user: 'Admin',
+                    text: text,
+                    photo: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                    timestamp: Date.now()
+                });
+                input.value = '';
+            }
+        }
+
+        // Enter key for admin chat
+        document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendAdminChatMessage();
+        });
+
         // Initial Load
         loadStaffActivity();
         loadStaffList();
+        loadAdminChat();
 
     </script>
 </body>
