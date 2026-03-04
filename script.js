@@ -526,17 +526,15 @@ let existingBookings = [];
 
 // Fetch existing bookings to prevent double booking
 function fetchExistingBookings() {
-    if (window.firebaseDB) {
-        const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
-        window.firebaseOnValue(bookingsRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                existingBookings = Object.values(data);
-            } else {
-                existingBookings = [];
-            }
-        });
+    if (typeof window.firebaseDB === 'undefined') {
+        window.addEventListener('firebaseLoaded', fetchExistingBookings);
+        return;
     }
+    const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
+    window.firebaseOnValue(bookingsRef, (snapshot) => {
+        const data = snapshot.val();
+        existingBookings = data ? Object.values(data) : [];
+    });
 }
 
 // Check availability live

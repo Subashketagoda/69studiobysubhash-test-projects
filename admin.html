@@ -2406,7 +2406,7 @@
         }
 
         // Enter key for admin chat
-        document.getElementById('admin-chat-input').addEventListener('keypress', (e) => {
+        document.getElementById('admin-chat-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') sendAdminChatMessage();
         });
 

@@ -737,7 +737,7 @@
             }
         }
 
-        document.getElementById('portal-chat-input').addEventListener('keypress', (e) => {
+        document.getElementById('portal-chat-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') sendPortalMessage();
         });
 
