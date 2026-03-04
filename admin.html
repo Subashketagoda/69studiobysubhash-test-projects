@@ -1561,6 +1561,8 @@
             document.getElementById('login-gate').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'block';
             switchAdminSection('dashboard', document.querySelector('.nav-item'));
+            loadStaffList();
+            loadStaffActivity();
         }
 
         function logout() {
@@ -2096,8 +2098,14 @@
             loadStaffActivity();
         }
 
+        let activityListenerActive = false;
         function loadStaffActivity() {
-            if (typeof window.firebaseDB === 'undefined') return;
+            if (typeof window.firebaseDB === 'undefined') {
+                window.addEventListener('firebaseLoaded', () => loadStaffActivity(), { once: true });
+                return;
+            }
+            if (activityListenerActive) return;
+            activityListenerActive = true;
 
             const today = new Date().toISOString().split('T')[0];
             const staffRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff');
@@ -2189,8 +2197,14 @@
             loadStaffList();
         }
 
+        let staffListListenerActive = false;
         function loadStaffList() {
-            if (typeof window.firebaseDB === 'undefined') return;
+            if (typeof window.firebaseDB === 'undefined') {
+                window.addEventListener('firebaseLoaded', () => loadStaffList(), { once: true });
+                return;
+            }
+            if (staffListListenerActive) return;
+            staffListListenerActive = true;
             const staffRef = window.firebaseRef(window.firebaseDB, 'dinepro/staff/users');
 
             window.firebaseOnValue(staffRef, (snapshot) => {
@@ -2299,8 +2313,9 @@
             }
         }
 
-        // Initial Activity Load
+        // Initial Load
         loadStaffActivity();
+        loadStaffList();
 
     </script>
 </body>
