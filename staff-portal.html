@@ -264,14 +264,86 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
+        /* Staff Portal Mobile Responsiveness */
         @media (max-width: 768px) {
             .portal-layout {
                 grid-template-columns: 1fr;
             }
 
             .portal-sidebar {
-                display: none;
+                position: fixed;
+                left: -280px;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1001;
+                transition: 0.3s ease;
+                display: flex !important;
             }
+
+            .portal-sidebar.active {
+                left: 0;
+            }
+
+            .portal-main {
+                padding: 80px 20px 40px;
+            }
+
+            .mobile-portal-toggle {
+                display: block !important;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1002;
+                background: var(--admin-accent);
+                color: white;
+                width: 45px;
+                height: 45px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .gate-card {
+                padding: 30px 20px;
+                margin: 0 15px;
+            }
+
+            .chat-frame {
+                height: 60vh;
+            }
+        }
+
+        .mobile-portal-toggle {
+            display: none;
+        }
+
+        /* Overlay for sidebar */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
         }
     </style>
 </head>
@@ -290,6 +362,14 @@
             <p id="gate-error" style="color: red; display: none; margin-top: 15px;">Invalid access code.</p>
         </div>
     </div>
+
+    <!-- Mobile Toggle -->
+    <div class="mobile-portal-toggle" onclick="toggleSidebar()" id="sidebar-toggle-btn">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <div class="portal-layout">
         <!-- Sidebar Navigation -->
@@ -619,6 +699,22 @@
         document.getElementById('portal-chat-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendPortalMessage();
         });
+
+        // Toggle Sidebar for Mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.portal-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const toggleIcon = document.querySelector('#sidebar-toggle-btn i');
+
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+
+            if (sidebar.classList.contains('active')) {
+                toggleIcon.className = 'fas fa-times';
+            } else {
+                toggleIcon.className = 'fas fa-bars';
+            }
+        }
     </script>
 </body>
 

@@ -1318,7 +1318,11 @@ footer {
     }
 
     header {
-        padding: 15px 0 !important;
+        padding: 10px 0 !important;
+    }
+
+    header .container {
+        padding: 0 15px;
     }
 
     .mobile-toggle {
@@ -1381,8 +1385,8 @@ footer {
     }
 
     .nav-links a {
-        font-size: 20px;
-        letter-spacing: 3px;
+        font-size: 18px;
+        letter-spacing: 2px;
     }
 
     .dropdown-menu {
@@ -1402,23 +1406,32 @@ footer {
     }
 
     /* Hero Section */
+    .hero {
+        height: 70vh;
+    }
+
     .hero h1 {
-        font-size: 32px;
+        font-size: 36px;
         line-height: 1.2;
+        margin-bottom: 20px;
     }
 
     .hero p {
-        font-size: 14px;
+        font-size: 15px;
+        margin-bottom: 25px;
     }
 
     .hero-btns {
+        display: flex;
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
     }
 
     .btn {
         width: 100%;
         text-align: center;
+        margin-right: 0;
+        padding: 12px 25px;
     }
 
     /* Sections */
@@ -1426,8 +1439,12 @@ footer {
         padding: 60px 0;
     }
 
+    .section-header {
+        margin-bottom: 40px;
+    }
+
     .section-header h2 {
-        font-size: 30px;
+        font-size: 32px;
     }
 
     /* Grids */
@@ -1446,30 +1463,43 @@ footer {
     }
 
     /* Page Specific */
+    .page-header {
+        padding: 100px 0 50px;
+    }
+
     .page-header h1 {
-        font-size: 36px;
+        font-size: 32px;
     }
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 15px;
+    }
+
     .hero h1 {
         font-size: 28px;
     }
 
     .logo-text .main {
-        font-size: 22px;
+        font-size: 20px;
         letter-spacing: -0.5px;
     }
 
     .logo-text .sub {
-        font-size: 8px;
+        font-size: 7px;
         letter-spacing: 1px;
     }
 
     .logo-icon {
-        width: 45px;
-        height: 45px;
-        margin-right: 10px;
+        width: 40px;
+        height: 40px;
+        margin-right: 8px;
+    }
+
+    .hero-btns .btn {
+        font-size: 14px;
+        padding: 12px 20px;
     }
 }
 
