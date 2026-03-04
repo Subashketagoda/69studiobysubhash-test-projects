@@ -122,7 +122,7 @@ function handleBotResponse(userText) {
     } else if (query.includes('price') || query.includes('cost')) {
         response = "Our pricing is tailored to each project. You can get a free consultation via WhatsApp to discuss your needs!";
     } else if (query.includes('contact') || query.includes('call')) {
-        response = "You can reach us at +94 76 121 0164 or email info@globehospitalitymc.com.";
+        response = "You can reach us at +94 76 258 3670 or email udaradon@yahoo.com.";
     } else if (query.includes('thank')) {
         response = "You're very welcome! Let me know if you need anything else.";
     }
