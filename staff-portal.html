@@ -925,8 +925,8 @@
         }
 
         function playNotifySound(title, body) {
-            // New Modern Digital Chime notification sound
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            // New Clear Digital Ping sound
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
             audio.volume = 1.0;
 
             // Mobile audio unlock required
@@ -979,6 +979,13 @@
             // 3. Test Notification
             if (Notification.permission === 'granted') {
                 playNotifySound("Portal Active", "You are now synced for background alerts.");
+            }
+
+            // iOS Check
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (isIOS && !isStandalone) {
+                alert("iPhone Users: Tap the 'Share' icon (square with arrow) and select 'Add to Home Screen'. Then open the app from your home screen to enable Lockscreen alerts!");
             }
         }
 

@@ -2745,8 +2745,8 @@
         }
 
         function playNotifySound(title, body) {
-            // New Modern Digital Chime notification sound
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+            // New Clear Digital Ping sound
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
             audio.volume = 1.0;
 
             // Only play if audio is unlocked (or attempt playback)
@@ -2802,6 +2802,13 @@
             // 3. Test Notification
             if (Notification.permission === 'granted') {
                 playNotifySound("System Sync", "Notifications are now active on your device.");
+            }
+
+            // iOS Check
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (isIOS && !isStandalone) {
+                alert("iPhone Users: To get notifications while the screen is locked or in background, tap the 'Share' icon and select 'Add to Home Screen'. Then open the app from your home screen.");
             }
         }
 
