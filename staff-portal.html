@@ -217,7 +217,12 @@
             background: linear-gradient(135px, #ef4444, #dc2626);
         }
 
-        /* Typography */
+        .btn-accent {
+            background: linear-gradient(135px, var(--admin-accent), #BF8C12) !important;
+            color: white !important;
+        }
+
+        /* Typography & Resets */
         h1,
         h2,
         h3 {
@@ -230,31 +235,51 @@
             font-size: 0.9rem;
         }
 
+        button {
+            border: none;
+            background: none;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
         /* Form Controls */
         .portal-form textarea,
         .portal-form input,
         .gate-card input,
-        .gate-card select {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid var(--glass-border);
+        .gate-card select,
+        .chat-input,
+        #portal-chat-input,
+        #admin-pchat-input {
+            background: rgba(15, 23, 42, 0.6) !important;
+            border: 1px solid var(--glass-border) !important;
             border-radius: 18px;
             padding: 16px 20px;
-            color: white;
+            color: white !important;
             outline: none;
             width: 100%;
             box-sizing: border-box;
             transition: all 0.3s ease;
             font-family: 'Outfit', sans-serif;
             font-size: 15px;
+            appearance: none;
+            -webkit-appearance: none;
         }
 
         .portal-form textarea:focus,
         .portal-form input:focus,
         .gate-card input:focus,
-        .gate-card select:focus {
-            border-color: var(--admin-accent);
-            background: rgba(15, 23, 42, 0.9);
-            box-shadow: 0 0 20px rgba(166, 121, 10, 0.15);
+        .gate-card select:focus,
+        .chat-input:focus,
+        #portal-chat-input:focus,
+        #admin-pchat-input:focus {
+            border-color: var(--admin-accent) !important;
+            background: rgba(15, 23, 42, 0.8) !important;
+            box-shadow: 0 0 20px rgba(166, 121, 10, 0.2);
+        }
+
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.3);
         }
 
         /* Chat System */
@@ -536,7 +561,7 @@
             <h2>Staff Portal Login</h2>
             <input type="text" id="gate-name" placeholder="Your Registered Name">
             <input type="password" id="gate-pass" placeholder="Personal Password">
-            <button class="toggle-btn btn-on" style="width: 100%; justify-content: center;"
+            <button class="toggle-btn btn-accent" style="width: 100%; justify-content: center;"
                 onclick="portalLogin()">Enter Portal</button>
             <p id="gate-error" style="color: red; display: none; margin-top: 15px;">Invalid access code.</p>
         </div>
@@ -639,7 +664,7 @@
                             <textarea id="report-text" rows="8"
                                 placeholder="List your completed tasks and achievements..."></textarea>
                         </div>
-                        <button type="submit" class="toggle-btn btn-on"
+                        <button type="submit" class="toggle-btn btn-accent"
                             style="width: 100%; justify-content: center;">Submit Daily Report</button>
                     </form>
                     <div id="report-success"
