@@ -1694,6 +1694,11 @@
                 subtitle.innerText = 'Visualize your business trajectory';
             }
 
+            // Notification Permission Check
+            if (sectionId === 'staff-hub' && Notification.permission !== 'granted') {
+                showToast('Enable system notifications to receive alerts while working in other tabs!', 'fas fa-bell');
+                Notification.requestPermission();
+            }
             // Close sidebar on mobile after selection
             if (window.innerWidth <= 992) {
                 toggleAdminSidebar();
@@ -2712,8 +2717,9 @@
                     // Only notify if: Not initial load (null count), count increased, and sender is staff (not Admin)
                     if (privateMsgCounts[staffId] !== undefined && messages.length > privateMsgCounts[staffId]) {
                         if (lastMsg.sender !== 'Admin' && currentPChatStaffId !== staffId) {
-                            showToast(`New message from ${staff.name}: ${lastMsg.text.substring(0, 30)}${lastMsg.text.length > 30 ? '...' : ''}`, 'fas fa-envelope');
-                            playNotifySound();
+                            const msgShort = `${lastMsg.text.substring(0, 30)}${lastMsg.text.length > 30 ? '...' : ''}`;
+                            showToast(`New message from ${staff.name}: ${msgShort}`, 'fas fa-envelope');
+                            playNotifySound(`Message from ${staff.name}`, lastMsg.text);
                         }
                     }
                     privateMsgCounts[staffId] = messages.length;
@@ -2723,6 +2729,7 @@
 
         function showToast(msg, icon = 'fas fa-bell') {
             const container = document.getElementById('toast-container');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.innerHTML = `
@@ -2737,10 +2744,18 @@
             }, 5000);
         }
 
-        function playNotifySound() {
+        function playNotifySound(title, body) {
             const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
             audio.volume = 0.5;
             audio.play().catch(e => console.log("Sound blocked"));
+
+            // --- BROWSER SYSTEM NOTIFICATION ---
+            if (Notification.permission === 'granted') {
+                new Notification(title || "DinePro Admin Alert", {
+                    body: body || "You have a new message.",
+                    icon: 'logo.png.png'
+                });
+            }
         }
 
         function sendPrivateMessage() {

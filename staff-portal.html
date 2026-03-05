@@ -668,6 +668,11 @@
                     area.scrollTop = area.scrollHeight;
                 }, 100);
             }
+
+            // Notification Permission Check
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
         }
 
         // --- Duty / Attendance Logic ---
@@ -857,8 +862,9 @@
                 if (!isInitialLoad && messages.length > lastPrivMsgCount) {
                     const lastMsg = messages[messages.length - 1];
                     if (lastMsg.sender === 'Admin' && !document.getElementById('private-admin-chat').classList.contains('active')) {
-                        showToast(`Admin: ${lastMsg.text.substring(0, 30)}${lastMsg.text.length > 30 ? '...' : ''}`, 'fas fa-user-shield');
-                        playNotifySound();
+                        const msgShort = `${lastMsg.text.substring(0, 30)}${lastMsg.text.length > 30 ? '...' : ''}`;
+                        showToast(`Admin: ${msgShort}`, 'fas fa-user-shield');
+                        playNotifySound("Admin Message", lastMsg.text);
                     }
                 }
 
@@ -910,10 +916,18 @@
             }, 5000);
         }
 
-        function playNotifySound() {
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3'); // Light notification sound
+        function playNotifySound(title, body) {
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
             audio.volume = 0.5;
-            audio.play().catch(e => console.log("Sound blocked by browser"));
+            audio.play().catch(e => console.log("Sound blocked"));
+
+            // --- BROWSER SYSTEM NOTIFICATION ---
+            if (Notification.permission === 'granted') {
+                new Notification(title || "DinePro Portal Alert", {
+                    body: body || "You have a new message.",
+                    icon: 'logo.png.png'
+                });
+            }
         }
 
         function sendPrivateAdminMessage() {
