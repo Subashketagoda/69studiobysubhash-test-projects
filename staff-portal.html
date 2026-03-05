@@ -917,16 +917,28 @@
         }
 
         function playNotifySound(title, body) {
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
-            audio.volume = 0.5;
+            // Long alarm/bell sound
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/131/131-preview.mp3');
+            audio.volume = 0.8;
             audio.play().catch(e => console.log("Sound blocked"));
 
-            // --- BROWSER SYSTEM NOTIFICATION ---
+            // --- BROWSER SYSTEM NOTIFICATION (INCLUDING BACKGROUND) ---
             if (Notification.permission === 'granted') {
-                new Notification(title || "DinePro Portal Alert", {
+                const options = {
                     body: body || "You have a new message.",
-                    icon: 'logo.png.png'
-                });
+                    icon: 'logo.png.png',
+                    badge: 'logo.png.png',
+                    vibrate: [200, 100, 200, 100, 200, 100, 400],
+                    requireInteraction: true // Stays until dismissed
+                };
+
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(title || "DinePro Portal Alert", options);
+                    });
+                } else {
+                    new Notification(title || "DinePro Portal Alert", options);
+                }
             }
         }
 
@@ -962,6 +974,13 @@
             } else {
                 toggleIcon.className = 'fas fa-bars';
             }
+        }
+
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('SW Registered', reg))
+                .catch(err => console.log('SW Failed', err));
         }
     </script>
 </body>
