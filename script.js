@@ -658,3 +658,56 @@ document.addEventListener('DOMContentLoaded', () => {
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
     setTimeout(loadReviews, 1);
 }
+
+// --- PWA INSTALLATION LOGIC ---
+const installBanner = document.createElement('div');
+installBanner.id = 'pwa-install-banner';
+installBanner.style.cssText = `
+    position: fixed; bottom: 20px; left: 20px; right: 20px; 
+    background: white; padding: 20px; border-radius: 15px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+    display: none; z-index: 999999; border: 1px solid rgba(93, 58, 26, 0.1);
+    animation: fadeInUp 0.5s ease;
+`;
+installBanner.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <img src="logo.png.png" style="width: 50px; height: 50px; border-radius: 12px; object-fit: contain;">
+        <div style="flex-grow: 1;">
+            <h4 style="margin: 0; font-size: 16px; color: #333;">Install DinePro App</h4>
+            <p style="margin: 3px 0 0; font-size: 11px; color: #666;">Experience full app features & notifications</p>
+        </div>
+        <button id="pwa-install-btn" style="background: #5D3A1A; color: white; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer;">Install</button>
+        <button id="pwa-close-banner" style="background: none; border: none; font-size: 18px; color: #999; cursor: pointer;">&times;</button>
+    </div>
+`;
+document.body.appendChild(installBanner);
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.style.setProperty('display', 'block', 'important');
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'pwa-install-btn') {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => {
+                installBanner.style.display = 'none';
+            });
+            deferredPrompt = null;
+        } else {
+            alert("📱 To Install on iPhone:\n\n1. Tap the Share button at bottom.\n2. Tap 'Add to Home Screen'.");
+        }
+    }
+    if (e.target.id === 'pwa-close-banner') {
+        installBanner.style.display = 'none';
+    }
+});
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch((err) => console.log('SW fail:', err));
+    });
+}

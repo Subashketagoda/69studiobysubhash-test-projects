@@ -1,8 +1,7 @@
 {
-    "name": "Staff Portal | DinePro",
+    "name": "Staff Portal | DinePro Advisors",
     "short_name": "Staff Portal",
-    "start_url": "./staff-portal.html",
-    "scope": "./",
+    "start_url": "/staff-portal.html",
     "display": "standalone",
     "background_color": "#0f172a",
     "theme_color": "#0f172a",
@@ -10,12 +9,15 @@
         {
             "src": "logo.png.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         },
         {
             "src": "logo.png.png",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any"
         }
-    ]
+    ],
+    "scope": "/"
 }
