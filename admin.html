@@ -2155,6 +2155,8 @@
             chatBody.scrollTop = chatBody.scrollHeight;
 
             if (apiKey) {
+                // Save key for public chat fallback
+                localStorage.setItem('dinepro_gemini_key', apiKey);
 
                 // Actual API Call
                 try {

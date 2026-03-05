@@ -112,25 +112,56 @@ function addMessage(text, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function handleBotResponse(userText) {
+async function handleBotResponse(userText) {
+    const messagesContainer = document.getElementById('messagesContainer');
+    if (!messagesContainer) return;
+
+    // Show typing state
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot typing';
+    typingDiv.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
     const query = userText.toLowerCase();
     let response = "I'm not sure about that. Would you like to speak with a consultant on WhatsApp?";
 
-    if (query.includes('hello') || query.includes('hi')) {
-        response = "Hello! Welcome to DinePro Advisors. How can we help your hospitality business today?";
-    } else if (query.includes('service') || query.includes('what do you do')) {
-        response = "We offer Concept Development, Menu Engineering, Staff Training, and Operational Audits. Which one interest you?";
-    } else if (query.includes('price') || query.includes('cost')) {
-        response = "Our pricing is tailored to each project. You can get a free consultation via WhatsApp to discuss your needs!";
-    } else if (query.includes('contact') || query.includes('call')) {
-        response = "You can reach us at +94 76 258 3670 or email udaradon@yahoo.com.";
-    } else if (query.includes('thank')) {
-        response = "You're very welcome! Let me know if you need anything else.";
+    // --- CHECK FOR GEMINI API KEY IN LOCAL STORAGE OR ADMIN SYNC ---
+    const geminiKey = localStorage.getItem('dinepro_gemini_key') || "";
+
+    if (geminiKey) {
+        try {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: `You are a helpful assistant for DinePro Advisors, a restaurant consulting firm. User asks: ${userText}` }]
+                    }]
+                })
+            });
+            const data = await res.json();
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                response = data.candidates[0].content.parts[0].text;
+            }
+        } catch (e) {
+            console.error("Gemini fail", e);
+        }
+    } else {
+        // FALLBACK TO MOCK
+        if (query.includes('hello') || query.includes('hi')) {
+            response = "Hello! Welcome to DinePro Advisors. How can we help your hospitality business today?";
+        } else if (query.includes('service') || query.includes('what do you do')) {
+            response = "We offer Concept Development, Menu Engineering, Staff Training, and Operational Audits. Which one interest you?";
+        } else if (query.includes('price') || query.includes('cost')) {
+            response = "Our pricing is tailored to each project. You can get a free consultation via WhatsApp to discuss your needs!";
+        } else if (query.includes('contact') || query.includes('call')) {
+            response = "You can reach us at +94 76 258 3670 or email udaradon@yahoo.com.";
+        }
     }
 
-    setTimeout(() => {
-        addMessage(response, 'bot');
-    }, 1000);
+    typingDiv.remove();
+    addMessage(response, 'bot');
 }
 
 function sendUserMessage() {
