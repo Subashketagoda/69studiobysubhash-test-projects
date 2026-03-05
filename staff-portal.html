@@ -33,10 +33,10 @@
         body.portal-mode {
             background-color: var(--admin-bg);
             background-image:
-                radial-gradient(circle at top right, rgba(166, 121, 10, 0.15), transparent 400px),
-                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.05), transparent 400px),
-                linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.95)),
-                url('hero2.jpg');
+                radial-gradient(circle at top right, rgba(166, 121, 10, 0.2), transparent 600px),
+                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.1), transparent 600px),
+                linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.85)),
+                url('portal_bg.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -110,6 +110,31 @@
             width: 20px;
             text-align: center;
             font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:nth-child(2) i {
+            color: #38bdf8;
+        }
+
+        /* Dashboard */
+        .nav-item:nth-child(3) i {
+            color: #4ade80;
+        }
+
+        /* Report */
+        .nav-item:nth-child(4) i {
+            color: #fbbf24;
+        }
+
+        /* Team Chat */
+        .nav-item:nth-child(5) i {
+            color: #a78bfa;
+        }
+
+        /* Admin DM */
+        .nav-item.active i {
+            color: white !important;
         }
 
         .nav-item:hover {
@@ -210,16 +235,19 @@
         }
 
         .btn-on {
-            background: linear-gradient(135px, #10b981, #059669);
+            background: linear-gradient(135px, #10B981, #059669);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         }
 
         .btn-off {
-            background: linear-gradient(135px, #ef4444, #dc2626);
+            background: linear-gradient(135px, #EF4444, #DC2626);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
         }
 
         .btn-accent {
-            background: linear-gradient(135px, var(--admin-accent), #BF8C12) !important;
+            background: linear-gradient(135px, #A6790A, #D4AF37) !important;
             color: white !important;
+            box-shadow: 0 8px 25px rgba(166, 121, 10, 0.4);
         }
 
         /* Typography & Resets */
@@ -381,7 +409,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), url('hero3.jpg');
+            background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('portal_bg.png');
             background-size: cover;
         }
 
