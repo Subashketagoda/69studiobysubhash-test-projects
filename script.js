@@ -1,30 +1,31 @@
-// Visitor Tracking with Firebase Sync
+// Visitor Tracking with Firebase Sync for Daily Analytics Chart
 function trackVisitor() {
-    if (typeof window.firebaseDB === 'undefined') {
+    if (typeof window.firebaseDB === 'undefined' || typeof window.firebaseOnValue === 'undefined') {
         window.addEventListener('firebaseLoaded', trackVisitor);
         return;
     }
 
-    const visitsRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats/visits');
+    const statsRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats');
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const lastVisitKey = 'dinepro_last_visit_time';
+    const now = Date.now();
+    const ONE_HOUR = 3600000;
 
-    // Only count once per session
-    if (!sessionStorage.getItem('counted_visit')) {
-        window.firebaseOnValue(visitsRef, (snapshot) => {
-            const currentVisits = snapshot.val() || 0;
-            // Use set once to avoid infinite loop since we are in a listener
-            // Better: use a one-time get but onValue is already here
+    // Check if it's been more than an hour since the last recorded visit
+    const lastVisit = localStorage.getItem(lastVisitKey);
+    if (!lastVisit || (now - parseInt(lastVisit)) > ONE_HOUR) {
+        window.firebaseOnValue(statsRef, (snapshot) => {
+            let stats = snapshot.val() || { visits: 0, dailyVisits: {} };
+            if (!stats.dailyVisits) stats.dailyVisits = {};
+
+            stats.visits = (stats.visits || 0) + 1;
+            stats.dailyVisits[todayStr] = (stats.dailyVisits[todayStr] || 0) + 1;
+
+            window.firebaseSet(statsRef, stats);
+            localStorage.setItem(lastVisitKey, now.toString());
+            localStorage.setItem('dinepro_visits', stats.visits);
         }, { onlyOnce: true });
-
-        // Atomic increment (simplification)
-        const visitsCountRef = window.firebaseRef(window.firebaseDB, 'dinepro/stats/visits');
-        // Get current, then increment
-        fetch('https://studio-7cdf1-default-rtdb.firebaseio.com/dinepro/stats/visits.json')
-            .then(res => res.json())
-            .then(val => {
-                const newVal = (val || 0) + 1;
-                window.firebaseSet(visitsCountRef, newVal);
-                sessionStorage.setItem('counted_visit', 'true');
-            });
     }
 }
 trackVisitor();
