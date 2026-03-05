@@ -925,7 +925,7 @@
         }
 
         function playNotifySound(title, body) {
-            // Updated to a premium "Elegant Glass Ding" sound, approx 3s
+            // High-quality iPhone-style "Glass" notification sound
             const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
             audio.volume = 1.0;
 
@@ -940,10 +940,11 @@
                     body: body || "You have a new message.",
                     icon: 'logo.png.png',
                     badge: 'logo.png.png',
-                    vibrate: [200, 100, 200, 100, 200, 100, 400],
+                    vibrate: [100, 50, 100],
                     requireInteraction: true,
                     silent: false,
-                    tag: 'dinepro-msg-staff'
+                    tag: 'dinepro-msg-staff',
+                    renotify: true
                 };
 
                 if ('serviceWorker' in navigator) {
