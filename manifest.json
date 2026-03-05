@@ -1,0 +1,20 @@
+{
+  "name": "DinePro Advisors",
+  "short_name": "DinePro",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#5D3A1A",
+  "theme_color": "#5D3A1A",
+  "icons": [
+    {
+      "src": "logo.png.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
