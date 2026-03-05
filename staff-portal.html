@@ -480,6 +480,14 @@
             </div>
 
             <nav class="sidebar-nav">
+                <div style="margin-bottom: 20px; padding: 0 10px;">
+                    <button id="notify-sync-btn" onclick="enableMobileNotifications()"
+                        style="width: 100%; background: rgba(166,121,10,0.1); border: 1px solid var(--admin-accent); color: var(--admin-accent); padding: 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <i class="fas fa-bell-slash"></i> SYNC NOTIFICATIONS
+                    </button>
+                    <p style="font-size: 8px; color: #94a3b8; text-align: center; margin-top: 5px;">(Required for
+                        background alerts on mobile)</p>
+                </div>
                 <div class="nav-item active" onclick="switchSection('dashboard', this)">
                     <i class="fas fa-th-large"></i> Dashboard
                 </div>
@@ -917,10 +925,14 @@
         }
 
         function playNotifySound(title, body) {
-            // Long alarm/bell sound
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/131/131-preview.mp3');
-            audio.volume = 0.8;
-            audio.play().catch(e => console.log("Sound blocked"));
+            // Updated to a premium "Elegant Glass Ding" sound, approx 3s
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
+            audio.volume = 1.0;
+
+            // Mobile audio unlock required
+            audio.play().catch(e => {
+                showToast("New Message! Tap 'Sync' to hear alerts.", "fas fa-volume-up");
+            });
 
             // --- BROWSER SYSTEM NOTIFICATION (INCLUDING BACKGROUND) ---
             if (Notification.permission === 'granted') {
@@ -929,16 +941,43 @@
                     icon: 'logo.png.png',
                     badge: 'logo.png.png',
                     vibrate: [200, 100, 200, 100, 200, 100, 400],
-                    requireInteraction: true // Stays until dismissed
+                    requireInteraction: true,
+                    silent: false,
+                    tag: 'dinepro-msg-staff'
                 };
 
-                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.ready.then(registration => {
                         registration.showNotification(title || "DinePro Portal Alert", options);
                     });
                 } else {
                     new Notification(title || "DinePro Portal Alert", options);
                 }
+            }
+        }
+
+        function enableMobileNotifications() {
+            // 1. Unlock Audio Context
+            const silentAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
+            silentAudio.volume = 0;
+            silentAudio.play().then(() => {
+                const btn = document.getElementById('notify-sync-btn');
+                btn.innerHTML = '<i class="fas fa-bell"></i> SYSTEM SYNCED';
+                btn.style.background = 'rgba(5, 150, 105, 0.1)';
+                btn.style.borderColor = '#059669';
+                btn.style.color = '#059669';
+
+                showToast('Audio & Notifications Synced!', 'fas fa-check-circle');
+            }).catch(e => console.log("Failed to unlock audio"));
+
+            // 2. Request System Permission
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            // 3. Test Notification
+            if (Notification.permission === 'granted') {
+                playNotifySound("Portal Active", "You are now synced for background alerts.");
             }
         }
 

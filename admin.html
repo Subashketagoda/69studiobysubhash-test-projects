@@ -2745,10 +2745,16 @@
         }
 
         function playNotifySound(title, body) {
-            // A much longer, clearer notification "Ringing Bell" sound (approx 4s)
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/131/131-preview.mp3');
-            audio.volume = 0.8;
-            audio.play().catch(e => console.log("Sound blocked"));
+            // Updated to a premium "Elegant Glass Ding" sound, approx 3s
+            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
+            audio.volume = 1.0;
+
+            // Only play if audio is unlocked (or attempt playback)
+            audio.play().catch(e => {
+                console.log("Audio play failed - requires user gesture.");
+                // Fallback: Show a toast letting them know they need to click the sync button
+                showToast("New Message! Click 'Sync' to enable sound.", "fas fa-volume-up");
+            });
 
             // --- BROWSER SYSTEM NOTIFICATION (INCLUDING BACKGROUND) ---
             if (Notification.permission === 'granted') {
@@ -2757,17 +2763,44 @@
                     icon: 'logo.png.png',
                     badge: 'logo.png.png',
                     vibrate: [200, 100, 200, 100, 200, 100, 400],
-                    requireInteraction: true // Keeps notification visible until user interacts
+                    requireInteraction: true,
+                    silent: false, // Ensure system sound is handled by system
+                    tag: 'dinepro-msg' // Prevent duplicate notifications
                 };
 
-                // Use Service Worker if available for better background/lockscreen performance
-                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.ready.then(registration => {
                         registration.showNotification(title || "DinePro Alert", options);
                     });
                 } else {
                     new Notification(title || "DinePro Alert", options);
                 }
+            }
+        }
+
+        // --- MOBILE AUDIO & NOTIFY UNLOCK ---
+        function enableMobileNotifications() {
+            // 1. Unlock Audio Context
+            const silentAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
+            silentAudio.volume = 0;
+            silentAudio.play().then(() => {
+                const btn = document.getElementById('notify-sync-btn');
+                btn.innerHTML = '<i class="fas fa-bell"></i> SYSTEM READY';
+                btn.style.background = 'rgba(5, 150, 105, 0.1)';
+                btn.style.borderColor = '#059669';
+                btn.style.color = '#059669';
+
+                showToast('Audio & Notifications Synced!', 'fas fa-check-circle');
+            }).catch(e => console.log("Failed to unlock audio"));
+
+            // 2. Request System Permission
+            if (Notification.permission !== 'granted') {
+                Notification.requestPermission();
+            }
+
+            // 3. Test Notification
+            if (Notification.permission === 'granted') {
+                playNotifySound("System Sync", "Notifications are now active on your device.");
             }
         }
 
