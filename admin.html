@@ -2155,8 +2155,11 @@
             chatBody.scrollTop = chatBody.scrollHeight;
 
             if (apiKey) {
-                // Save key for public chat fallback
-                localStorage.setItem('dinepro_gemini_key', apiKey);
+                // Save key to Firebase for site-wide AI (Public Widget)
+                if (window.firebaseDB) {
+                    const configRef = window.firebaseRef(window.firebaseDB, 'dinepro/config/geminiKey');
+                    window.firebaseSet(configRef, apiKey);
+                }
 
                 // Actual API Call
                 try {

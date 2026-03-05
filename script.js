@@ -112,6 +112,24 @@ function addMessage(text, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+// --- GLOBAL GEMINI SYNC ---
+let globalGeminiKey = localStorage.getItem('dinepro_gemini_key') || "";
+function syncGlobalGemini() {
+    if (typeof window.firebaseDB === 'undefined') {
+        window.addEventListener('firebaseLoaded', syncGlobalGemini);
+        return;
+    }
+    const keyRef = window.firebaseRef(window.firebaseDB, 'dinepro/config/geminiKey');
+    window.firebaseOnValue(keyRef, (snapshot) => {
+        const key = snapshot.val();
+        if (key) {
+            globalGeminiKey = key;
+            localStorage.setItem('dinepro_gemini_key', key);
+        }
+    });
+}
+syncGlobalGemini();
+
 async function handleBotResponse(userText) {
     const messagesContainer = document.getElementById('messagesContainer');
     if (!messagesContainer) return;
@@ -126,17 +144,15 @@ async function handleBotResponse(userText) {
     const query = userText.toLowerCase();
     let response = "I'm not sure about that. Would you like to speak with a consultant on WhatsApp?";
 
-    // --- CHECK FOR GEMINI API KEY IN LOCAL STORAGE OR ADMIN SYNC ---
-    const geminiKey = localStorage.getItem('dinepro_gemini_key') || "";
-
-    if (geminiKey) {
+    // --- USE GLOBAL KEY ---
+    if (globalGeminiKey) {
         try {
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`, {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${globalGeminiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{
-                        parts: [{ text: `You are a helpful assistant for DinePro Advisors, a restaurant consulting firm. User asks: ${userText}` }]
+                        parts: [{ text: `You are a helpful assistant for DinePro Advisors, a restaurant consulting firm. Use a professional, helpful tone. User asks: ${userText}` }]
                     }]
                 })
             });
