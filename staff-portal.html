@@ -19,26 +19,30 @@
     <style>
         :root {
             /* Standard Colors (Modern Mode) */
-            --admin-bg: #ffffff;
+            --admin-bg: #F8F4F0;
+            /* Cream Dust from main site */
             --admin-card: #ffffff;
             --admin-accent: #5D3A1A;
-            /* Primary Brown from main site */
+            /* Primary Brown */
+            --admin-accent-bright: #A6790A;
+            /* Golden Ochre */
             --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(93, 58, 26, 0.1);
+            --glass-border: rgba(166, 121, 10, 0.15);
             --success: #10b981;
             --danger: #ef4444;
             --text-main: #2D1B0D;
-            /* Dark Espresso from main site */
+            /* Dark Espresso */
             --text-muted: #5D3A1A;
             --sidebar-width: 280px;
-            --sidebar-bg: #F8F4F0;
-            /* Cream Dust from main site */
+            --sidebar-bg: #ffffff;
             --nav-item-bg: transparent;
             --nav-item-text: #5D3A1A;
-            --nav-item-active-bg: rgba(93, 58, 26, 0.1);
+            --nav-item-active-bg: rgba(166, 121, 10, 0.08);
             --nav-item-active-text: #A6790A;
             --card-shadow: 0 10px 40px rgba(93, 58, 26, 0.08);
-            --bg-base: #ffffff;
+            --bg-base: #F8F4F0;
+            --input-bg: rgba(93, 58, 26, 0.05);
+            --input-text: #2D1B0D;
         }
 
         body.dark-mode {
@@ -46,6 +50,7 @@
             --admin-bg: #0f172a;
             --admin-card: rgba(15, 23, 42, 0.75);
             --admin-accent: #D4AF37;
+            --admin-accent-bright: #D4AF37;
             --glass: rgba(30, 41, 59, 0.45);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
@@ -57,6 +62,8 @@
             --nav-item-active-text: #D4AF37;
             --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             --bg-base: #020617;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-text: #ffffff;
         }
 
 
@@ -245,15 +252,15 @@
         }
 
         .nav-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
+            background: var(--nav-item-active-bg);
+            color: var(--nav-item-active-text);
             transform: translateX(5px);
         }
 
         .nav-item.active {
-            background: linear-gradient(135px, var(--admin-accent), #BF8C12);
-            color: white;
-            box-shadow: 0 10px 25px rgba(166, 121, 10, 0.3);
+            background: linear-gradient(135px, var(--admin-accent), var(--admin-accent-bright));
+            color: white !important;
+            box-shadow: 0 10px 25px rgba(93, 58, 26, 0.2);
             border-color: rgba(255, 255, 255, 0.1);
         }
 
@@ -368,7 +375,7 @@
         h2,
         h3 {
             margin: 0 0 20px 0;
-            color: white;
+            color: var(--text-main);
         }
 
         .text-muted {
@@ -392,11 +399,11 @@
         .chat-input,
         #portal-chat-input,
         #admin-pchat-input {
-            background: rgba(15, 23, 42, 0.6) !important;
+            background: var(--input-bg) !important;
             border: 1px solid var(--glass-border) !important;
             border-radius: 18px;
             padding: 16px 20px;
-            color: white !important;
+            color: var(--input-text) !important;
             outline: none;
             width: 100%;
             box-sizing: border-box;
@@ -414,13 +421,14 @@
         .chat-input:focus,
         #portal-chat-input:focus,
         #admin-pchat-input:focus {
-            border-color: var(--admin-accent) !important;
-            background: rgba(15, 23, 42, 0.8) !important;
+            border-color: var(--admin-accent-bright) !important;
+            background: var(--admin-card) !important;
             box-shadow: 0 0 20px rgba(166, 121, 10, 0.2);
         }
 
         ::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+            color: var(--text-muted);
+            opacity: 0.5;
         }
 
         /* Chat System */
@@ -818,12 +826,12 @@
         </div>
         <div class="gate-card">
             <img src="logo.png.png" width="80" style="margin-bottom: 20px;">
-            <h2>Staff Portal Login</h2>
+            <h2 style="color: var(--text-main);">Staff Portal Login</h2>
             <input type="text" id="gate-name" placeholder="Your Registered Name">
             <input type="password" id="gate-pass" placeholder="Personal Password">
             <button class="toggle-btn btn-accent" style="width: 100%; justify-content: center;"
                 onclick="portalLogin()">Enter Portal</button>
-            <p id="gate-error" style="color: red; display: none; margin-top: 15px;">Invalid access code.</p>
+            <p id="gate-error" style="color: var(--danger); display: none; margin-top: 15px;">Invalid access code.</p>
         </div>
     </div>
 
@@ -899,8 +907,8 @@
                 <div class="status-grid">
                     <div class="card duty-status">
                         <div>
-                            <h4 style="color: #94a3b8; margin: 0;">Duty Status</h4>
-                            <h2 id="duty-text" style="margin: 10px 0;">OFF DUTY</h2>
+                            <h4 style="color: var(--text-muted); margin: 0;">Duty Status</h4>
+                            <h2 id="duty-text" style="color: var(--text-main); margin: 10px 0;">OFF DUTY</h2>
                         </div>
                         <button id="duty-toggle" class="toggle-btn btn-on" onclick="toggleDuty()">
                             <i class="fas fa-power-off"></i> Clock In
@@ -908,16 +916,18 @@
                     </div>
 
                     <div class="card">
-                        <h4 style="color: #94a3b8; margin: 0 0 15px 0;">Active Session</h4>
-                        <div id="duty-timer" style="font-size: 28px; font-weight: 800;">00:00:00</div>
-                        <p id="duty-log-text" style="font-size: 12px; color: #94a3b8; margin-top: 10px;">Not clocked in
+                        <h4 style="color: var(--text-muted); margin: 0 0 15px 0;">Active Session</h4>
+                        <div id="duty-timer" style="font-size: 28px; font-weight: 800; color: var(--text-main);">
+                            00:00:00</div>
+                        <p id="duty-log-text" style="font-size: 12px; color: var(--text-muted); margin-top: 10px;">Not
+                            clocked in
                             today.</p>
                     </div>
                 </div>
 
                 <div class="card">
                     <h2 style="margin-bottom: 20px;">Your Attendance History (Today)</h2>
-                    <div id="attendance-list" style="font-size: 14px; color: #cbd5e1;">
+                    <div id="attendance-list" style="font-size: 14px; color: var(--text-main);">
                         No logs yet.
                     </div>
                 </div>

@@ -13,25 +13,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Light Mode */
+            --admin-bg: #F8F4F0;
+            --admin-card: #ffffff;
+            --admin-accent: #5D3A1A;
+            --admin-accent-bright: #A6790A;
+            --glass: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(166, 121, 10, 0.15);
+            --text-main: #2D1B0D;
+            --text-muted: #5D3A1A;
+        }
+
+        body.dark-mode {
+            /* Dark Mode */
             --admin-bg: #0f172a;
             --admin-card: rgba(15, 23, 42, 0.6);
-            --admin-accent: #A6790A;
+            --admin-accent: #D4AF37;
+            --admin-accent-bright: #D4AF37;
             --glass: rgba(30, 41, 59, 0.45);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         body.chat-mode {
             background-color: var(--admin-bg);
-            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('hero2.jpg');
+            background-image: linear-gradient(rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.1)), url('hero2.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            color: #f8fafc;
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             flex-direction: column;
             font-family: 'Outfit', sans-serif;
             overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        body.chat-mode.dark-mode {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('hero2.jpg');
         }
 
         .chat-container {
@@ -74,7 +95,7 @@
         .chat-header h1 {
             font-size: 24px;
             font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--admin-accent));
+            background: linear-gradient(to right, var(--text-main), var(--admin-accent-bright));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -125,14 +146,15 @@
 
         .message.received {
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--admin-card);
             border: 1px solid var(--glass-border);
             border-bottom-left-radius: 5px;
+            color: var(--text-main);
         }
 
         .message.sent {
             align-self: flex-end;
-            background: linear-gradient(135deg, var(--admin-accent), #8B5E3C);
+            background: linear-gradient(135deg, var(--admin-accent), var(--admin-accent-bright));
             color: white;
             border-bottom-right-radius: 5px;
             box-shadow: 0 10px 20px rgba(166, 121, 10, 0.2);
@@ -165,11 +187,11 @@
 
         .chat-input {
             flex-grow: 1;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--admin-card);
             border: 1px solid var(--glass-border);
             border-radius: 15px;
             padding: 15px 20px;
-            color: white;
+            color: var(--text-main);
             font-family: inherit;
             font-size: 15px;
             outline: none;
@@ -177,8 +199,8 @@
         }
 
         .chat-input:focus {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--admin-accent);
+            background: var(--admin-card);
+            border-color: var(--admin-accent-bright);
             box-shadow: 0 0 15px rgba(166, 121, 10, 0.1);
         }
 
@@ -205,9 +227,9 @@
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--admin-card);
             border: 1px solid var(--glass-border);
-            color: #fff;
+            color: var(--text-main);
             padding: 10px 20px;
             border-radius: 12px;
             text-decoration: none;
@@ -230,11 +252,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(15, 23, 42, 0.95);
+            background: var(--admin-bg);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            transition: background 0.4s ease;
         }
 
         .name-card {
@@ -256,10 +279,10 @@
         .name-card select {
             width: 100%;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--admin-card);
             border: 1px solid var(--glass-border);
             border-radius: 15px;
-            color: white;
+            color: var(--text-main);
             text-align: center;
             font-size: 16px;
             margin-bottom: 20px;
@@ -319,7 +342,7 @@
             <h1><i class="fas fa-shield-alt"></i> <span id="room-name">Staff Chat</span></h1>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <div style="text-align: right;">
-                    <div id="display-name" style="font-size: 14px; font-weight: 700; color: #fff;"></div>
+                    <div id="display-name" style="font-size: 14px; font-weight: 700; color: var(--text-main);"></div>
                     <div id="display-level"
                         style="font-size: 10px; color: var(--admin-accent); font-weight: 800; text-transform: uppercase;">
                     </div>
@@ -345,6 +368,14 @@
     <script>
         let currentUser = "";
         let currentLevel = "level1";
+
+        // Mode Sync Logic
+        (function () {
+            const savedMode = localStorage.getItem('staff_mode') || 'dark';
+            if (savedMode === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
 
         // Room Configurations
         const ROOMS = {
