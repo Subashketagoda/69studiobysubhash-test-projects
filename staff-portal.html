@@ -19,22 +19,25 @@
     <style>
         :root {
             /* Standard Colors (Modern Mode) */
-            --admin-bg: #f1f5f9;
-            --admin-card: rgba(255, 255, 255, 0.9);
-            --admin-accent: #A6790A;
-            --glass: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(0, 0, 0, 0.05);
+            --admin-bg: #ffffff;
+            --admin-card: #ffffff;
+            --admin-accent: #5D3A1A;
+            /* Primary Brown from main site */
+            --glass: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(93, 58, 26, 0.1);
             --success: #10b981;
             --danger: #ef4444;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-main: #2D1B0D;
+            /* Dark Espresso from main site */
+            --text-muted: #5D3A1A;
             --sidebar-width: 280px;
-            --sidebar-bg: rgba(255, 255, 255, 0.85);
+            --sidebar-bg: #F8F4F0;
+            /* Cream Dust from main site */
             --nav-item-bg: transparent;
-            --nav-item-text: #64748b;
-            --nav-item-active-bg: rgba(166, 121, 10, 0.1);
+            --nav-item-text: #5D3A1A;
+            --nav-item-active-bg: rgba(93, 58, 26, 0.1);
             --nav-item-active-text: #A6790A;
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 10px 40px rgba(93, 58, 26, 0.08);
         }
 
         body.dark-mode {
@@ -55,15 +58,11 @@
         }
 
 
+
         body.portal-mode {
             background-color: var(--admin-bg);
             transition: background-color 0.4s ease, color 0.4s ease;
-            background-image:
-                radial-gradient(circle at top right, rgba(166, 121, 10, 0.15), transparent 600px),
-                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.1), transparent 600px);
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background-image: none;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -72,6 +71,13 @@
             margin: 0;
             overflow-x: hidden;
         }
+
+        body.portal-mode.dark-mode {
+            background-image:
+                radial-gradient(circle at top right, rgba(166, 121, 10, 0.15), transparent 600px),
+                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.1), transparent 600px);
+        }
+
 
 
         .portal-layout {
