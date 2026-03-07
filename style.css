@@ -11,8 +11,8 @@
     --light-gray: #F8F4F0;
     /* Cream Dust */
     --white: #ffffff;
-    --glass: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(93, 58, 26, 0.1);
+    --glass: rgba(10, 14, 23, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
     --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -49,8 +49,8 @@
 body {
     font-family: 'Outfit', sans-serif;
     line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--white);
+    color: var(--white);
+    background-color: #020617;
     overflow-x: hidden;
 }
 
@@ -117,10 +117,10 @@ body {
 
 /* Header & Nav */
 header {
-    background: var(--glass);
+    background: rgba(10, 14, 23, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--glass-border);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 10px 0;
     position: sticky;
     top: 0;
@@ -169,7 +169,7 @@ header .container {
     font-size: 32px;
     font-weight: 800;
     letter-spacing: -0.5px;
-    color: var(--primary-color);
+    color: var(--white);
     line-height: 1;
 }
 
@@ -194,7 +194,7 @@ header .container {
 
 .nav-links a {
     text-decoration: none;
-    color: var(--text-color);
+    color: var(--white);
     font-weight: 600;
     font-size: 13px;
     letter-spacing: 1px;
@@ -397,10 +397,13 @@ header .container {
 
 /* Mini Features */
 .mini-features {
-    background: var(--light-gray);
-    color: var(--primary-color);
-    padding: 30px 0;
-    border-top: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--white);
+    padding: 40px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mini-features .container {
@@ -420,7 +423,7 @@ header .container {
 
 /* About Section */
 .about-section {
-    background: var(--white);
+    background: transparent;
     position: relative;
     overflow: hidden;
 }
@@ -486,11 +489,12 @@ header .container {
 }
 
 .section-header h2 {
-    font-size: 42px;
-    color: var(--primary-color);
+    font-size: 45px;
+    color: var(--white);
     margin-bottom: 20px;
     font-weight: 800;
     text-transform: capitalize;
+    letter-spacing: -1px;
 }
 
 .divider {
@@ -509,13 +513,15 @@ header .container {
 }
 
 .service-card {
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     padding: 0;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(93, 58, 26, 0.05);
-    border-radius: 24px;
-    transition: var(--transition);
-    border: 1px solid var(--glass-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    border-radius: 30px;
+    transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
     display: flex;
@@ -558,24 +564,40 @@ header .container {
 }
 
 .service-card:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.5);
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.service-card h3 {
+    color: var(--white);
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.service-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 15px;
+    line-height: 1.7;
 }
 
 .icon-box {
-    width: 80px;
-    height: 80px;
-    background: var(--light-gray);
-    color: var(--secondary-color);
+    width: 75px;
+    height: 75px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: var(--white);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 35px;
-    border-radius: 18px;
+    font-size: 30px;
+    border-radius: 20px;
     margin: 0 auto 30px;
     transition: var(--transition);
     position: relative;
     z-index: 2;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .service-card:hover .icon-box {
@@ -657,9 +679,12 @@ header .container {
     right: 0;
     width: 350px;
     max-width: calc(100vw - 20px);
-    background: #ffffff !important;
+    background: rgba(10, 14, 23, 0.95) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: none;
     flex-direction: column;
     overflow: hidden;
@@ -715,15 +740,16 @@ header .container {
 }
 
 .chat-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chat-card h4 {
-    color: #333;
+    color: var(--white);
     font-size: 15px;
     margin-bottom: 12px;
 }
@@ -1390,7 +1416,7 @@ footer {
         display: block;
         width: 100%;
         height: 2px;
-        background: var(--primary-color);
+        background: var(--white);
         margin-bottom: 5px;
         transition: var(--transition);
         border-radius: 2px;
@@ -1416,7 +1442,7 @@ footer {
         right: -100%;
         width: 85%;
         height: 100vh;
-        background: var(--white);
+        background: rgba(10, 14, 23, 0.98);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         display: flex;
@@ -1425,8 +1451,8 @@ footer {
         align-items: center;
         transition: 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         z-index: 10002;
-        border-left: 1px solid var(--glass-border);
-        box-shadow: -15px 0 45px rgba(93, 58, 26, 0.15);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: -15px 0 45px rgba(0, 0, 0, 0.5);
     }
 
     .nav-links.active {
@@ -1572,7 +1598,7 @@ footer {
 
 /* Reviews Section */
 .reviews-section {
-    background: var(--light-gray);
+    background: transparent;
 }
 
 .reviews-container {
@@ -1583,15 +1609,16 @@ footer {
 }
 
 .review-card {
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.05);
     padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(93, 58, 26, 0.05);
-    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    backdrop-filter: blur(10px);
 }
 
 .review-card:hover {
@@ -1608,10 +1635,9 @@ footer {
 
 .review-text {
     font-size: 15px;
-    color: var(--text-color);
+    color: rgba(255, 255, 255, 0.8);
     margin-bottom: 25px;
     font-style: italic;
-    opacity: 0.9;
     line-height: 1.8;
 }
 
@@ -1639,7 +1665,7 @@ footer {
 
 .reviewer-name {
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--white);
     margin-bottom: 2px;
 }
 
@@ -1650,13 +1676,14 @@ footer {
 
 /* Add Review Form */
 .add-review-form {
-    background: var(--white);
+    background: rgba(0, 0, 0, 0.3);
     padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-    max-width: 800px;
+    border-radius: 30px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    max-width: 850px;
     margin: 0 auto;
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
 }
 
 .add-review-form .form-header {
@@ -1666,7 +1693,7 @@ footer {
 
 .add-review-form .form-header h3 {
     font-size: 28px;
-    color: var(--primary-color);
+    color: var(--white);
     margin-bottom: 5px;
 }
 
@@ -1736,11 +1763,12 @@ footer {
 }
 
 .booking-form-wrapper {
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.03);
     padding: 60px;
     border-radius: 40px;
-    box-shadow: 0 30px 60px rgba(93, 58, 26, 0.08);
-    border: 1px solid var(--glass-border);
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(30px);
 }
 
 .half-grid {
@@ -1769,7 +1797,7 @@ footer {
     display: block;
     font-size: 14px;
     font-weight: 700;
-    color: var(--primary-color);
+    color: var(--accent-color);
     margin-bottom: 10px;
     letter-spacing: 0.5px;
 }
@@ -1779,22 +1807,22 @@ footer {
 .booking-section .form-group textarea {
     width: 100%;
     padding: 18px 25px;
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     font-family: 'Outfit', sans-serif;
     font-size: 15px;
-    background: #fdfdfd;
+    background: rgba(255, 255, 255, 0.05);
     transition: var(--transition);
     outline: none;
-    color: var(--text-color);
+    color: var(--white);
 }
 
 .booking-section .form-group input:focus,
 .booking-section .form-group select:focus,
 .booking-section .form-group textarea:focus {
     border-color: var(--accent-color);
-    background: white;
-    box-shadow: 0 10px 20px rgba(166, 121, 10, 0.05);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(166, 121, 10, 0.1);
 }
 
 .booking-section .form-group textarea {
@@ -1914,7 +1942,7 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #ffffff;
+    background: #020617;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1955,7 +1983,7 @@ footer {
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 4px;
-    color: var(--primary-color);
+    color: var(--accent-color);
     text-transform: uppercase;
     animation: loaderPulse 1.5s infinite;
 }
