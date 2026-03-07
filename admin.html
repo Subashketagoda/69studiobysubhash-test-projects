@@ -2245,36 +2245,18 @@
 
         function replyBooking(email, phone, name) {
             const subject = encodeURIComponent("Consultation Booking - DinePro Advisors");
+            const body = encodeURIComponent(`Hi ${name},\n\nThank you for booking a consultation with DinePro Advisors. We've received your request and would like to confirm the details.`);
 
-            const body = encodeURIComponent(`Hi ${name
-                }
-
-                , \n\nThank you for booking a consultation with DinePro Advisors. We've received your request and would like to confirm the details.`);
-
-
-            const replyMethod = confirm(`How would you like to reply to ${name
-                }
-
-                    ?\n\nOK for Email\nCancel for WhatsApp`) ? 'email' : 'whatsapp';
+            const replyMethod = confirm(`How would you like to reply to ${name}?\n\nOK for Email\nCancel for WhatsApp`) ? 'email' : 'whatsapp';
 
             if (replyMethod === 'email') {
-                window.location.href = `mailto:${email
-                    }
-
-                    ?subject=${subject
-                    }
-
-                    &body=${body
-                    }
-
-                    `;
-            }
-
-            else {
+                window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+            } else {
                 const cleanPhone = phone.replace(/\D/g, '');
                 window.open(`https://wa.me/${cleanPhone}?text=${body}`, '_blank');
             }
         }
+
 
         function confirmBooking(key) {
             if (confirm('Mark this booking as Confirmed?')) {
@@ -2324,10 +2306,7 @@
             });
             monthEl.innerText = thisMonthBookings.length;
 
-            revenueEl.innerText = `LKR ${allBookingsCached.length * 25000
-                }
-
-                    `; // Estimated
+            revenueEl.innerText = `LKR ${allBookingsCached.length * 25000}`; // Estimated
 
             allBookingsCached.forEach(([key, b]) => {
                 const tr = document.createElement('tr');
@@ -2348,44 +2327,55 @@
         }
 
         function downloadBookingReport() {
+            if (!allBookingsCached || allBookingsCached.length === 0) {
+                alert("No booking data available to download.");
+                return;
+            }
+
             let csv = "Date,Name,Email,Phone,Service,Time,Status\n";
-
             allBookingsCached.forEach(([key, b]) => {
-                csv += `${b.date
-                    }
-
-                            , ${b.name
-                    }
-
-                            , ${b.email
-                    }
-
-                            , ${b.phone
-                    }
-
-                            , ${b.service
-                    }
-
-                            , ${b.time
-                    }
-
-                            , ${b.status
-                    }
-
-                            \n`;
+                const clean = (val) => {
+                    if (val === undefined || val === null) return '';
+                    // Remove commas and quotes for CSV safety
+                    return `"${val.toString().replace(/"/g, '""').replace(/\s+/g, ' ').trim()}"`;
+                };
+                csv += `${clean(b.date)},${clean(b.name)},${clean(b.email)},${clean(b.phone)},${clean(b.service)},${clean(b.time)},${clean(b.status || 'Pending')}\n`;
             });
 
-            const blob = new Blob([csv], {
-                type: 'text/csv'
-            });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'dinepro_bookings_report.csv');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            const filename = 'dinepro_bookings_report.csv';
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+
+            // Check for iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+            if (isIOS) {
+                // Use a safe Data URL approach for iOS Safari
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const url = reader.result;
+                    const link = document.createElement('a');
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', filename);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+                reader.readAsDataURL(blob);
+            } else if (navigator.msSaveBlob) {
+                navigator.msSaveBlob(blob, filename);
+            } else {
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }, 250);
+            }
         }
 
         // Manual Booking Submit

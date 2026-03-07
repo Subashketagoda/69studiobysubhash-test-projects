@@ -869,15 +869,15 @@
                     </button>
                 </div>
 
-                <div style="margin-bottom: 30px; padding: 0 15px;">
+                <div style="margin-bottom: 20px; padding: 0 15px; display: flex; flex-direction: column; gap: 8px;">
                     <button id="notify-sync-btn" onclick="enableMobileNotifications()"
-                        style="width: 100%; background: #F8F4F0; border: 1.5px solid #5D3A1A; color: #5D3A1A; padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(93, 58, 26, 0.05);">
-                        <i class="fas fa-bell-slash"></i> SYNC NOTIFICATIONS
+                        style="width: 100%; background: rgba(166, 121, 10, 0.1); border: 1.5px solid var(--admin-accent); color: var(--admin-accent); padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
+                        <i class="fas fa-bell"></i> SYSTEM SYNC
                     </button>
-                    <p
-                        style="font-size: 10px; color: #5D3A1A; opacity: 0.6; text-align: center; margin-top: 10px; font-weight: 600;">
-                        (Required for
-                        background alerts on mobile)</p>
+                    <button id="staff-refresh-btn" onclick="location.reload()"
+                        style="width: 100%; background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); padding: 10px; border-radius: 15px; cursor: pointer; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;">
+                        <i class="fas fa-sync-alt"></i> Refresh Portal
+                    </button>
                 </div>
 
                 <div class="nav-item active" onclick="switchSection('dashboard', this)">
@@ -1358,16 +1358,51 @@
             }
         }
 
+        // Handle PWA Install Prompt for Staff
+        let deferredStaffPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredStaffPrompt = e;
+            const syncBtn = document.getElementById('notify-sync-btn');
+            if (syncBtn) {
+                syncBtn.innerHTML = '<i class="fas fa-download"></i> INSTALL APP';
+                syncBtn.style.animation = 'pulse-staff 2s infinite';
+            }
+        });
+
+        // Register Service Worker with scope
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js', { scope: './' })
+                .then(reg => console.log('Staff SW Registered', reg))
+                .catch(err => console.log('Staff SW Failed', err));
+        }
+
         function enableMobileNotifications() {
+            // Handle PWA Installation first if button has flipped to Install mode
+            if (deferredStaffPrompt) {
+                deferredStaffPrompt.prompt();
+                deferredStaffPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Staff accepted install');
+                        const btn = document.getElementById('notify-sync-btn');
+                        btn.style.animation = 'none';
+                        btn.innerHTML = '<i class="fas fa-bell"></i> SYSTEM SYNC';
+                    }
+                    deferredStaffPrompt = null;
+                });
+                return;
+            }
+
             // 1. Unlock Audio Context
             const silentAudio = new Audio('notify.mp3');
             silentAudio.volume = 0;
             silentAudio.play().then(() => {
                 const btn = document.getElementById('notify-sync-btn');
-                btn.innerHTML = '<i class="fas fa-bell"></i> SYSTEM SYNCED';
-                btn.style.background = 'rgba(5, 150, 105, 0.1)';
-                btn.style.borderColor = '#059669';
-                btn.style.color = '#059669';
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> SYSTEM SYNCED';
+                btn.style.background = 'rgba(16, 185, 129, 0.1)';
+                btn.style.borderColor = 'var(--success)';
+                btn.style.color = 'var(--success)';
+                btn.style.animation = 'none';
 
                 showToast('Audio & Notifications Synced!', 'fas fa-check-circle');
             }).catch(e => console.log("Failed to unlock audio"));
@@ -1404,7 +1439,7 @@
             }
         }
 
-        document.getElementById('admin-pchat-input').addEventListener('keydown', (e) => {
+        document.getElementById('admin-pchat-input')?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') sendPrivateAdminMessage();
         });
 
@@ -1425,7 +1460,6 @@
                 toggleIcon.className = 'fas fa-bars';
             }
         }
-
 
         // Mode Toggle Logic
         function toggleDisplayMode() {
@@ -1455,13 +1489,17 @@
             }
         })();
 
-        // Register Service Worker
+        // Pulse Animation CSS
+        const styleStaff = document.createElement('style');
+        styleStaff.innerHTML = `
+            @keyframes pulse-staff {
+                0% { box-shadow: 0 0 0 0 rgba(166, 121, 10, 0.4); }
+                70% { box-shadow: 0 0 0 15px rgba(166, 121, 10, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(166, 121, 10, 0); }
+            }
+        `;
+        document.head.appendChild(styleStaff);
 
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('SW Registered', reg))
-                .catch(err => console.log('SW Failed', err));
-        }
     </script>
 </body>
 
