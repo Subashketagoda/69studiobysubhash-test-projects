@@ -46,8 +46,8 @@ window.addEventListener('scroll', function () {
     const header = document.querySelector('header');
     if (window.scrollY > 100) {
         header.style.padding = '8px 0';
-        header.style.background = 'rgba(10, 14, 23, 0.95)';
-        header.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.borderBottom = '1px solid rgba(93, 58, 26, 0.1)';
         header.style.backdropFilter = 'blur(15px)';
     } else {
         header.style.padding = '15px 0';
