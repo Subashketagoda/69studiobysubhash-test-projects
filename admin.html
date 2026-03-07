@@ -72,25 +72,28 @@
             border: 1px solid var(--glass-border) !important;
         }
 
-        /* Targeted visibility fix for Dashboard title/subtitle */
+        /* Hyper-Targeted visibility fix for Header Title & Subtitle */
         #admin-view-title {
             color: var(--text-main) !important;
             display: block !important;
+            margin-bottom: 5px !important;
         }
 
         #admin-view-subtitle {
             color: var(--text-muted) !important;
             display: block !important;
             opacity: 1 !important;
-            margin-top: 5px;
+            font-size: 14px !important;
+            font-weight: 500 !important;
         }
 
+        /* Explicit Overrides for Themes */
         body.light-mode #admin-view-title {
-            color: #231206 !important;
+            color: #1a1a1a !important;
         }
 
         body.light-mode #admin-view-subtitle {
-            color: #64748b !important;
+            color: #4b5563 !important;
         }
 
         body:not(.light-mode) #admin-view-title {
@@ -99,6 +102,19 @@
 
         body:not(.light-mode) #admin-view-subtitle {
             color: #cbd5e1 !important;
+        }
+
+        /* Sidebar Logo highlights */
+        .sidebar-brand img {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        body.light-mode .sidebar-brand img {
+            background: rgba(93, 58, 26, 0.03);
+            border: 1px solid rgba(93, 58, 26, 0.1);
         }
 
         body.light-mode {
@@ -1327,15 +1343,15 @@
             <!-- Sidebar Navigation -->
             <aside class="admin-sidebar shadow-lg">
                 <div class="sidebar-brand"
-                    style="padding: 30px 24px; border-bottom: 1px solid var(--glass-border); margin-bottom: 20px;">
-                    <img src="logo.png.png" alt="Logo" width="65"
-                        style="filter: drop-shadow(0 0 12px rgba(93, 58, 26, 0.2));">
-                    <div style="margin-top: 10px;">
+                    style="padding: 25px; border-bottom: 1px solid var(--glass-border); margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+                    <img src="logo.png.png" alt="Logo"
+                        style="width: 55px; height: 55px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(166,121,10,0.3));">
+                    <div>
                         <h4
-                            style="margin: 0; font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">
+                            style="margin: 0; font-size: 22px; font-weight: 800; color: var(--text-main); line-height: 1;">
                             DinePro</h4>
                         <span
-                            style="font-size: 11px; color: var(--admin-accent-bright); font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">ADMIN
+                            style="font-size: 10px; color: var(--admin-accent); font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">ADMIN
                             PORTAL</span>
                     </div>
                 </div>
@@ -1386,7 +1402,8 @@
                             <p id="admin-view-subtitle">Real-time performance overview</p>
                         </div>
                         <div class="header-actions">
-                            <button class="btn-accent" style="font-size: 13px; height: 45px; padding: 0 25px;"
+                            <button class="btn-accent"
+                                style="font-size: 13px; height: 45px; padding: 0 25px; background: var(--admin-accent); color: #fff; border: none; font-weight: 800; box-shadow: 0 4px 15px rgba(166,121,10,0.3);"
                                 onclick="clearStats()"><i class="fas fa-history"></i> Reset Dashboard Stats</button>
                         </div>
                     </header>
