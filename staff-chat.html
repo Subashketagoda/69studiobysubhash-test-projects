@@ -13,6 +13,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Standard Colors (Premium Dark Mode Default) */
+            --admin-bg: #0f172a;
+            --admin-card: rgba(15, 23, 42, 0.6);
+            --admin-accent: #D4AF37;
+            --admin-accent-bright: #D4AF37;
+            --glass: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body.light-mode {
             /* Light Mode */
             --admin-bg: #F8F4F0;
             --admin-card: #ffffff;
@@ -22,18 +34,6 @@
             --glass-border: rgba(166, 121, 10, 0.15);
             --text-main: #2D1B0D;
             --text-muted: #5D3A1A;
-        }
-
-        body.dark-mode {
-            /* Dark Mode */
-            --admin-bg: #0f172a;
-            --admin-card: rgba(15, 23, 42, 0.6);
-            --admin-accent: #D4AF37;
-            --admin-accent-bright: #D4AF37;
-            --glass: rgba(30, 41, 59, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
         }
 
         body.chat-mode {
@@ -51,8 +51,8 @@
             transition: all 0.4s ease;
         }
 
-        body.chat-mode.dark-mode {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('hero2.jpg');
+        body.chat-mode.light-mode {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.05), rgba(15, 23, 42, 0.1)), url('hero2.jpg');
         }
 
         .chat-container {
@@ -396,8 +396,8 @@
         // Mode Sync Logic
         (function () {
             const savedMode = localStorage.getItem('staff_mode') || 'dark';
-            if (savedMode === 'dark') {
-                document.body.classList.add('dark-mode');
+            if (savedMode === 'light') {
+                document.body.classList.add('light-mode');
             }
         })();
 
