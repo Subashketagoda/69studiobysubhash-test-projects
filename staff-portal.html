@@ -682,9 +682,10 @@
 
             /* Hide menu icon during login OR when sidebar is open */
             #portal-gate:not([style*="display: none"])~.mobile-portal-toggle,
-            .portal-sidebar.active~.mobile-portal-toggle {
+            .mobile-portal-toggle.sidebar-active {
                 display: none !important;
             }
+
 
 
 
@@ -1381,10 +1382,12 @@
         function toggleSidebar() {
             const sidebar = document.querySelector('.portal-sidebar');
             const overlay = document.getElementById('sidebar-overlay');
+            const toggleBtn = document.getElementById('sidebar-toggle-btn');
             const toggleIcon = document.querySelector('#sidebar-toggle-btn i');
 
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
+            toggleBtn.classList.toggle('sidebar-active');
 
             if (sidebar.classList.contains('active')) {
                 toggleIcon.className = 'fas fa-times';
@@ -1392,6 +1395,7 @@
                 toggleIcon.className = 'fas fa-bars';
             }
         }
+
 
         // Mode Toggle Logic
         function toggleDisplayMode() {

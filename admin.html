@@ -931,10 +931,11 @@
                 display: flex !important;
                 position: fixed;
                 top: 25px;
-                left: 25px;
+                right: 25px;
                 z-index: 10006;
                 background: linear-gradient(135deg, var(--admin-accent), #BF8C12);
                 color: white;
+
                 width: 55px;
                 height: 55px;
                 border-radius: 18px;
@@ -947,9 +948,10 @@
 
             /* Hide menu icon during login OR when sidebar is open */
             #login-gate:not([style*="display: none"])~.mobile-admin-toggle,
-            .admin-sidebar.active~.mobile-admin-toggle {
+            .mobile-admin-toggle.sidebar-active {
                 display: none !important;
             }
+
 
 
 
@@ -1691,7 +1693,9 @@
         function toggleAdminSidebar() {
             document.querySelector('.admin-sidebar').classList.toggle('active');
             document.getElementById('admin-sidebar-overlay').classList.toggle('active');
+            document.querySelector('.mobile-admin-toggle').classList.toggle('sidebar-active');
         }
+
 
         function showPanel() {
             document.getElementById('login-gate').style.display = 'none';
