@@ -1,4 +1,15 @@
+// Premium Preloader Logic
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        setTimeout(() => {
+            preloader.classList.add('fade-out');
+        }, 1000); // 1 second delay for minimum visibility
+    }
+});
+
 // Visitor Tracking with Firebase Sync for Daily Analytics Chart
+
 function trackVisitor() {
     if (typeof window.firebaseDB === 'undefined' || typeof window.firebaseOnValue === 'undefined') {
         window.addEventListener('firebaseLoaded', trackVisitor);

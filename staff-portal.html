@@ -649,6 +649,34 @@
 </head>
 
 <body class="portal-mode">
+    <!-- Global Background Orbs -->
+    <div class="global-bg-anim">
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <!-- Premium Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <img src="logo.png.png" alt="DinePro Logo">
+            </div>
+            <div class="loader-spinner"></div>
+            <div class="loader-text">DINEPRO</div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            if (preloader) {
+                setTimeout(() => {
+                    preloader.classList.add('fade-out');
+                }, 800);
+            }
+        });
+    </script>
+
     <div id="toast-container"></div>
 
     <!-- Auth Gate -->
