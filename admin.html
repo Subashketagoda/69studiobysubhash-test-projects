@@ -19,25 +19,49 @@
     <meta name="apple-mobile-web-app-title" content="Admin Panel">
     <style>
         :root {
-            --admin-bg: #0f172a;
-            --admin-card: rgba(15, 23, 42, 0.75);
+            /* Standard Colors (Modern Mode) */
+            --admin-bg: #f1f5f9;
+            --admin-card: rgba(255, 255, 255, 0.9);
             --admin-accent: #A6790A;
-            --glass: rgba(30, 41, 59, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.05);
             --success: #10b981;
             --danger: #ef4444;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --sidebar-width: 280px;
+            --sidebar-bg: rgba(255, 255, 255, 0.85);
+            --nav-item-bg: transparent;
+            --nav-item-text: #64748b;
+            --nav-item-active-bg: rgba(166, 121, 10, 0.1);
+            --nav-item-active-text: #A6790A;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode {
+            /* Dark Mode Colors */
+            --admin-bg: #0f172a;
+            --admin-card: rgba(15, 23, 42, 0.75);
+            --admin-accent: #D4AF37;
+            --glass: rgba(30, 41, 59, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --sidebar-width: 280px;
+            --sidebar-bg: rgba(15, 23, 42, 0.65);
+            --nav-item-bg: transparent;
+            --nav-item-text: #94a3b8;
+            --nav-item-active-bg: rgba(166, 121, 10, 0.15);
+            --nav-item-active-text: #D4AF37;
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
+
 
         body.admin-mode {
             background-color: var(--admin-bg);
+            transition: background-color 0.4s ease, color 0.4s ease;
             background-image:
-                radial-gradient(circle at top right, rgba(166, 121, 10, 0.15), transparent 600px),
-                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.08), transparent 600px),
-                linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.9)),
-                url('portal_bg.png');
+                radial-gradient(circle at top right, rgba(166, 121, 10, 0.1), transparent 600px),
+                radial-gradient(circle at bottom left, rgba(166, 121, 10, 0.05), transparent 600px);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -49,6 +73,103 @@
             margin: 0;
             overflow-x: hidden;
         }
+
+        .admin-sidebar {
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 10005;
+            transition: transform 0.4s ease, background 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-card {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, background 0.4s ease, box-shadow 0.4s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .actions-section {
+            background: var(--admin-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 35px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
+            transition: background 0.4s ease;
+        }
+
+        .nav-item {
+            padding: 14px 22px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--nav-item-text);
+        }
+
+        .nav-item:hover {
+            color: var(--admin-accent);
+            background: rgba(166, 121, 10, 0.05);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: var(--nav-item-active-bg);
+            color: var(--nav-item-active-text);
+            box-shadow: 0 4px 15px rgba(166, 121, 10, 0.1);
+        }
+
+        /* Mode Toggle Switch */
+        .mode-toggle-container {
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mode-toggle-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: 1px solid var(--glass-border);
+            background: var(--nav-item-active-bg);
+            color: var(--admin-accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+        }
+
+        .mode-toggle-btn:hover {
+            background: var(--admin-accent);
+            color: white;
+        }
+
 
         /* Login Gateway */
         #login-gate {
@@ -815,6 +936,12 @@
                 font-size: 22px;
             }
 
+            /* Hide menu icon during login */
+            #login-gate:not([style*="display: none"])~.mobile-admin-toggle {
+                display: none !important;
+            }
+
+
             .sidebar-overlay {
                 display: none;
                 position: fixed;
@@ -909,7 +1036,7 @@
                 <img src="logo.png.png" alt="DinePro Logo">
             </div>
             <div class="loader-spinner"></div>
-            <div class="loader-text">DINEPRO</div>
+            <div class="loader-text">ADMIN PANEL</div>
         </div>
     </div>
     <script>
@@ -970,7 +1097,14 @@
                     </div>
                 </div>
 
+                <div class="mode-toggle-container">
+                    <button class="mode-toggle-btn" onclick="toggleDisplayMode()">
+                        <i id="mode-icon" class="fas fa-moon"></i> <span id="mode-text">Dark Mode</span>
+                    </button>
+                </div>
+
                 <nav class="sidebar-nav">
+
                     <div class="nav-item active" onclick="switchAdminSection('dashboard', this)">
                         <i class="fas fa-th-large"></i> Dashboard
                     </div>
@@ -2704,7 +2838,37 @@
 
         // Initialize activeStaffList after loading staff
         const originalLoadStaffList = loadStaffList;
+
+        // Mode Toggle Logic
+        function toggleDisplayMode() {
+            const body = document.body;
+            const isDark = body.classList.toggle('dark-mode');
+            localStorage.setItem('admin_mode', isDark ? 'dark' : 'light');
+            updateModeUI(isDark);
+        }
+
+        function updateModeUI(isDark) {
+            const icon = document.getElementById('mode-icon');
+            const text = document.getElementById('mode-text');
+            if (icon && text) {
+                icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+                text.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+            }
+        }
+
+        // Apply saved mode on load
+        (function () {
+            const savedMode = localStorage.getItem('admin_mode') || 'dark'; // Default to dark for premium feel
+            if (savedMode === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateModeUI(true);
+            } else {
+                updateModeUI(false);
+            }
+        })();
+
         loadStaffList = function () {
+
             if (typeof window.firebaseDB === 'undefined') {
                 window.addEventListener('firebaseLoaded', () => loadStaffList(), { once: true });
                 return;
