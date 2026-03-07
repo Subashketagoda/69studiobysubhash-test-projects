@@ -20,26 +20,30 @@
     <style>
         :root {
             /* Standard Colors (Modern Mode) */
-            --admin-bg: #ffffff;
+            --admin-bg: #F8F4F0;
+            /* Cream Dust background */
             --admin-card: #ffffff;
             --admin-accent: #5D3A1A;
-            /* Primary Brown from main site */
+            /* Primary Brown */
+            --admin-accent-bright: #A6790A;
+            /* Golden Ochre */
             --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(93, 58, 26, 0.1);
+            --glass-border: rgba(93, 58, 26, 0.15);
             --success: #10b981;
             --danger: #ef4444;
             --text-main: #2D1B0D;
-            /* Dark Espresso from main site */
+            /* Dark Espresso */
             --text-muted: #5D3A1A;
             --sidebar-width: 280px;
-            --sidebar-bg: #F8F4F0;
-            /* Cream Dust from main site */
+            --sidebar-bg: #ffffff;
             --nav-item-bg: transparent;
             --nav-item-text: #5D3A1A;
-            --nav-item-active-bg: rgba(93, 58, 26, 0.1);
+            --nav-item-active-bg: rgba(166, 121, 10, 0.1);
             --nav-item-active-text: #A6790A;
             --card-shadow: 0 10px 40px rgba(93, 58, 26, 0.08);
-            --bg-base: #ffffff;
+            --bg-base: #F8F4F0;
+            --input-bg: rgba(93, 58, 26, 0.05);
+            --input-text: #2D1B0D;
         }
 
         body.dark-mode {
@@ -47,6 +51,7 @@
             --admin-bg: #0f172a;
             --admin-card: rgba(15, 23, 42, 0.75);
             --admin-accent: #D4AF37;
+            --admin-accent-bright: #D4AF37;
             --glass: rgba(30, 41, 59, 0.45);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-main: #f8fafc;
@@ -58,6 +63,8 @@
             --nav-item-active-text: #D4AF37;
             --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
             --bg-base: #020617;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-text: #ffffff;
         }
 
 
@@ -73,6 +80,9 @@
             font-family: 'Outfit', sans-serif;
             margin: 0;
             overflow-x: hidden;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body.admin-mode.dark-mode {
@@ -318,16 +328,16 @@
             font-weight: 800;
             letter-spacing: 1px;
             font-size: 28px;
-            color: #fff;
+            color: var(--text-main);
         }
 
         .login-card input {
             width: 100%;
             padding: 18px;
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--input-bg);
             border: 1px solid var(--glass-border);
             border-radius: 20px;
-            color: white;
+            color: var(--input-text);
             margin-bottom: 25px;
             text-align: center;
             letter-spacing: 4px;
@@ -393,7 +403,7 @@
         }
 
         .admin-sidebar {
-            background: rgba(15, 23, 42, 0.65);
+            background: var(--sidebar-bg);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             border-right: 1px solid var(--glass-border);
@@ -435,15 +445,16 @@
         .nav-item {
             padding: 14px 20px;
             border-radius: 16px;
-            color: var(--text-muted);
+            color: var(--nav-item-text);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 15px;
-            font-weight: 600;
+            font-weight: 700;
             transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: 1px solid transparent;
+            letter-spacing: 0.3px;
         }
 
         .nav-item i {
@@ -456,12 +467,12 @@
 
         .nav-item:hover i {
             transform: scale(1.1);
-            color: white;
+            color: var(--admin-accent-bright);
         }
 
         .nav-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: white;
+            background: var(--nav-item-active-bg);
+            color: var(--admin-accent-bright);
             transform: translateX(5px);
         }
 
@@ -546,12 +557,13 @@
         }
 
         th {
-            background: rgba(0, 0, 0, 0.2);
+            background: var(--nav-item-active-bg);
             padding: 20px;
             text-align: left;
             font-size: 14px;
             text-transform: uppercase;
-            color: var(--text-muted);
+            color: var(--admin-accent);
+            font-weight: 800;
         }
 
         td {
@@ -590,8 +602,9 @@
 
         .stat-card:hover {
             transform: translateY(-10px);
-            background: rgba(30, 41, 59, 0.6);
-            border-color: var(--accent-color);
+            background: var(--admin-card);
+            border-color: var(--admin-accent-bright);
+            box-shadow: 0 15px 45px rgba(93, 58, 26, 0.12);
         }
 
         .stat-icon {
@@ -610,7 +623,7 @@
 
         .stat-info h3 {
             font-size: 13px;
-            color: #94a3b8;
+            color: var(--text-muted);
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -620,10 +633,10 @@
         .stat-info .value {
             font-size: 40px;
             font-weight: 800;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-main);
+            background: none;
+            -webkit-text-fill-color: initial;
+            transition: color 0.4s ease;
         }
 
         .actions-section {
@@ -639,12 +652,12 @@
         }
 
         .action-item {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--admin-card);
             padding: 25px;
             border-radius: 20px;
             border: 1px solid var(--glass-border);
             text-decoration: none;
-            color: #cbd5e1;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
@@ -652,10 +665,10 @@
         }
 
         .action-item:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: var(--admin-card);
             transform: translateY(-5px);
-            border-color: var(--accent-color);
-            color: #fff;
+            border-color: var(--admin-accent-bright);
+            color: var(--admin-accent-bright);
         }
 
         .action-item i {
@@ -737,10 +750,11 @@
 
         .report-stat-card h4 {
             font-size: 11px;
-            color: #64748b;
+            color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 8px;
             letter-spacing: 1px;
+            font-weight: 700;
         }
 
         .report-stat-card .value {
@@ -797,13 +811,13 @@
         .admin-form-group textarea {
             width: 100%;
             padding: 14px 18px;
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--input-bg);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            color: white;
+            border-radius: 15px;
+            color: var(--input-text);
             outline: none;
-            transition: 0.3s;
-            font-family: inherit;
+            transition: all 0.3s ease;
+            font-family: 'Outfit', sans-serif;
         }
 
         .form-control:focus {
@@ -845,14 +859,14 @@
         .close-modal {
             font-size: 26px;
             cursor: pointer;
-            color: #94a3b8;
+            color: var(--text-muted);
             transition: 0.3s;
             background: none;
             border: none;
         }
 
         .close-modal:hover {
-            color: white;
+            color: var(--admin-accent-bright);
             transform: rotate(90deg);
         }
 
@@ -929,10 +943,11 @@
                 top: 0;
                 width: var(--sidebar-width);
                 height: 100vh;
-                background: rgba(15, 23, 42, 0.98);
-                box-shadow: 25px 0 60px rgba(0, 0, 0, 0.6);
+                background: var(--sidebar-bg);
+                box-shadow: 25px 0 60px rgba(0, 0, 0, 0.15);
                 z-index: 10005;
-                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+                padding: 40px 20px;
             }
 
             .admin-sidebar.active {
@@ -1036,7 +1051,18 @@
             }
 
             table {
-                min-width: 500px;
+                min-width: 600px;
+            }
+
+            .admin-card {
+                padding: 20px;
+                border-radius: 20px;
+                margin-bottom: 20px;
+            }
+
+            .actions-section {
+                padding: 20px;
+                border-radius: 20px;
             }
 
             .gemini-chat-popup {
@@ -1119,9 +1145,9 @@
                 <div class="sidebar-brand">
                     <img src="logo.png.png" alt="Logo" width="50">
                     <div>
-                        <h4 style="margin: 0; font-size: 16px;">DinePro</h4>
+                        <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-main);">DinePro</h4>
                         <span
-                            style="font-size: 10px; color: var(--accent-color); font-weight: 800; letter-spacing: 1px;">ADMIN
+                            style="font-size: 10px; color: var(--admin-accent-bright); font-weight: 900; letter-spacing: 1.5px;">ADMIN
                             PORTAL</span>
                     </div>
                 </div>
@@ -1157,12 +1183,14 @@
                 <div class="container-fluid">
                     <header class="dashboard-header">
                         <div id="header-context">
-                            <h1 style="font-weight: 800; font-size: 28px;" id="admin-view-title">Admin Dashboard</h1>
-                            <p style="color: #94a3b8;" id="admin-view-subtitle">Real-time performance overview</p>
+                            <h1 style="font-weight: 800; font-size: 28px; color: var(--text-main);"
+                                id="admin-view-title">Admin Dashboard</h1>
+                            <p style="color: var(--text-muted);" id="admin-view-subtitle">Real-time performance overview
+                            </p>
                         </div>
                         <div class="header-actions">
                             <button class="logout-btn"
-                                style="background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.1);"
+                                style="background: var(--nav-item-active-bg); color: var(--admin-accent); border-color: var(--glass-border);"
                                 onclick="clearStats()">Reset Stats</button>
                         </div>
                     </header>
@@ -1190,7 +1218,9 @@
 
                         <!-- Client Messages Table -->
                         <div class="actions-section">
-                            <h2 style="margin-bottom: 20px; font-size: 20px;">Client Messages & Leads</h2>
+                            <h2
+                                style="margin-bottom: 20px; font-size: 20px; font-weight: 800; color: var(--text-main);">
+                                Client Messages & Leads</h2>
                             <div class="table-container">
                                 <table>
                                     <thead>
@@ -1212,7 +1242,8 @@
                         <div class="actions-section" style="margin-top: 40px;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                <h2 style="font-size: 20px;">Bookings & Consultations</h2>
+                                <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">Bookings &
+                                    Consultations</h2>
                                 <button class="logout-btn"
                                     style="background: var(--accent-color); color: white; border: none; font-size: 12px;"
                                     onclick="openBookingReportModal()">Detailed Report</button>
@@ -1237,7 +1268,9 @@
 
                         <!-- Reviews Table -->
                         <div class="actions-section" style="margin-top: 40px;">
-                            <h2 style="margin-bottom: 20px; font-size: 20px;">Client Reviews</h2>
+                            <h2
+                                style="margin-bottom: 20px; font-size: 20px; font-weight: 800; color: var(--text-main);">
+                                Client Reviews</h2>
                             <div class="table-container">
                                 <table>
                                     <thead>
@@ -1267,31 +1300,32 @@
                                         <div
                                             style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
                                             <input type="text" id="newStaffNameHub" placeholder="Full Name" required
-                                                style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: white;">
+                                                style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
                                             <input type="password" id="newStaffPassHub" placeholder="Password" required
-                                                style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: white;">
+                                                style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
                                         </div>
                                         <div
                                             style="margin-bottom: 15px; display: flex; gap: 15px; align-items: center;">
                                             <div id="photoPreviewHub"
-                                                style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                                <i class="fas fa-camera" style="font-size: 16px; color: #64748b;"></i>
+                                                style="width: 50px; height: 50px; border-radius: 50%; background: var(--input-bg); border: 1px dashed var(--glass-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                                <i class="fas fa-camera"
+                                                    style="font-size: 16px; color: var(--text-muted);"></i>
                                             </div>
                                             <div style="flex-grow: 1;">
                                                 <label for="newStaffPhotoFileHub"
-                                                    style="display: block; font-size: 11px; color: #94a3b8; margin-bottom: 5px;">Upload
+                                                    style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px;">Upload
                                                     Profile Photo</label>
                                                 <input type="file" id="newStaffPhotoFileHub" accept="image/*"
-                                                    style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; color: white; font-size: 12px;">
+                                                    style="width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); padding: 5px; border-radius: 8px; color: var(--input-text); font-size: 12px;">
                                                 <input type="hidden" id="newStaffPhotoBase64Hub">
                                             </div>
                                         </div>
                                         <div style="display: flex; gap: 15px;">
                                             <select id="newStaffLevelHub"
-                                                style="flex-grow: 1; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; color: white;">
-                                                <option value="level1">Level 1 - General</option>
+                                                style="flex-grow: 1; background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
+                                                <option value="level1">Level 1 - General Staff</option>
                                                 <option value="level2">Level 2 - Management</option>
-                                                <option value="level3">Level 3 - Executive</option>
+                                                <option value="level3">Level 3 - Executive Board</option>
                                             </select>
                                             <button type="submit" class="logout-btn"
                                                 style="background: var(--accent-color); border: none; color: white; font-weight: 700; padding: 0 25px;">Create
@@ -1301,7 +1335,8 @@
                                 </div>
 
                                 <div class="admin-card" style="margin-top: 30px;">
-                                    <h3 style="margin-bottom: 20px; font-size: 18px; color: #94a3b8;">Registered Team
+                                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-muted);">
+                                        Registered Team
                                     </h3>
                                     <div style="max-height: 400px; overflow-y: auto;">
                                         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
@@ -1358,8 +1393,9 @@
                                 <div class="admin-card">
                                     <div
                                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                                        <h3 style="margin: 0; font-size: 18px; color: #94a3b8;">Staff Work Reports</h3>
-                                        <div style="font-size: 12px; color: #64748b;">TODAY</div>
+                                        <h3 style="margin: 0; font-size: 18px; color: var(--text-muted);">Staff Work
+                                            Reports</h3>
+                                        <div style="font-size: 12px; color: var(--text-muted);">TODAY</div>
                                     </div>
                                     <div id="admin-staff-reports-hub"
                                         style="font-size: 13px; max-height: 400px; overflow-y: auto;"></div>
@@ -1375,8 +1411,10 @@
                                 <div
                                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
                                     <div>
-                                        <h3 style="margin: 0; font-size: 20px;">Visitor Traffic Analytics</h3>
-                                        <p style="color: #94a3b8; font-size: 13px; margin: 5px 0 0 0;">Daily unique
+                                        <h3 style="margin: 0; font-size: 20px; color: var(--text-main);">Visitor Traffic
+                                            Analytics</h3>
+                                        <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0 0 0;">Daily
+                                            unique
                                             visits over the last 7 days</p>
                                     </div>
                                     <div style="text-align: right;">
@@ -1422,8 +1460,8 @@
                         class="fas fa-external-link-alt"></i><span>Preview Website</span></a></div>
         </div>
         <footer
-            style="margin-top: 100px; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; color: #64748b; background: none !important; border-bottom: none;">
-            <p>&copy;
+            style="margin-top: 100px; padding: 40px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted); background: none !important; border-bottom: none;">
+            <p style="color: var(--text-muted);">&copy;
                 2026 DinePro Advisors | Secure Admin Portal </p>
         </footer>
     </div>
@@ -1441,23 +1479,24 @@
                 <h4 style="margin-bottom: 15px;">Add New Member</h4>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                     <input type="text" id="newStaffName" placeholder="Full Name" required
-                        style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white;"><input
+                        style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: var(--input-text);"><input
                         type="password" id="newStaffPass" placeholder="Personal Password" required
-                        style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white;">
+                        style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 10px; border-radius: 8px; color: var(--input-text);">
                 </div>
                 <div style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
                     <div id="photoPreview"
-                        style="width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                        <i class="fas fa-camera" style="font-size: 14px; color: #64748b;"></i>
+                        style="width: 45px; height: 45px; border-radius: 50%; background: var(--input-bg); border: 1px dashed var(--glass-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <i class="fas fa-camera" style="font-size: 14px; color: var(--text-muted);"></i>
                     </div>
                     <div style="flex-grow: 1;"><label for="newStaffPhotoFile"
-                            style="display: block; font-size: 11px; color: #94a3b8; margin-bottom: 5px;">Upload
+                            style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px;">Upload
                             Profile Photo (MAX 1MB)</label><input type="file" id="newStaffPhotoFile" accept="image/*"
-                            style="width: 100%; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); padding: 5px; border-radius: 8px; color: white; font-size: 12px;"><input
+                            style="width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); padding: 5px; border-radius: 8px; color: var(--input-text); font-size: 12px;"><input
                             type="hidden" id="newStaffPhotoBase64"></div>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <select id="newStaffLevel" class="form-control" style="flex-grow: 1;">
+                    <select id="newStaffLevel" class="form-control"
+                        style="flex-grow: 1; background: var(--input-bg); color: var(--input-text); border-color: var(--glass-border);">
                         <option value="level1">General Staff</option>
                         <option value="level2">Management</option>
                         <option value="level3">Executive Board</option>

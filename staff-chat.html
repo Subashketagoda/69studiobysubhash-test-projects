@@ -300,15 +300,39 @@
             color: #fff;
         }
 
-        .room-badge {
-            font-size: 10px;
-            padding: 3px 8px;
-            border-radius: 5px;
-            background: rgba(166, 121, 10, 0.2);
-            color: var(--admin-accent);
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-left: 10px;
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                margin: 0;
+            }
+
+            .chat-header {
+                padding: 15px 20px;
+            }
+
+            .chat-header h1 {
+                font-size: 18px;
+            }
+
+            .chat-messages {
+                padding: 15px;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+
+            .chat-input-area {
+                padding: 15px 20px;
+            }
+
+            .name-card {
+                padding: 30px 20px;
+                margin: 15px;
+                border-radius: 20px;
+            }
         }
     </style>
 </head>
