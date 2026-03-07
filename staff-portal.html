@@ -1328,7 +1328,7 @@
 
         function playNotifySound(title, body) {
             // New Clear Digital Ping sound
-            const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+            const audio = new Audio('notify.mp3');
             audio.volume = 1.0;
 
             // Mobile audio unlock required
@@ -1361,7 +1361,7 @@
 
         function enableMobileNotifications() {
             // 1. Unlock Audio Context
-            const silentAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2655/2655-preview.mp3');
+            const silentAudio = new Audio('notify.mp3');
             silentAudio.volume = 0;
             silentAudio.play().then(() => {
                 const btn = document.getElementById('notify-sync-btn');
