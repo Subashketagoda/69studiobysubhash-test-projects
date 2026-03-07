@@ -21,29 +21,23 @@
         :root {
             /* Standard Colors (Modern Mode) */
             --admin-bg: #F8F4F0;
-            /* Cream Dust background */
             --admin-card: #ffffff;
             --admin-accent: #5D3A1A;
-            /* Primary Brown */
             --admin-accent-bright: #A6790A;
-            /* Golden Ochre */
             --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(93, 58, 26, 0.15);
-            --success: #10b981;
-            --danger: #ef4444;
-            --text-main: #2D1B0D;
-            /* Dark Espresso */
+            --glass-border: rgba(93, 58, 26, 0.2);
+            --text-main: #231206;
             --text-muted: #5D3A1A;
             --sidebar-width: 280px;
             --sidebar-bg: #ffffff;
             --nav-item-bg: transparent;
-            --nav-item-text: #5D3A1A;
-            --nav-item-active-bg: rgba(166, 121, 10, 0.1);
-            --nav-item-active-text: #A6790A;
-            --card-shadow: 0 10px 40px rgba(93, 58, 26, 0.08);
+            --nav-item-text: #231206;
+            --nav-item-active-bg: rgba(166, 121, 10, 0.12);
+            --nav-item-active-text: #5D3A1A;
+            --card-shadow: 0 15px 45px rgba(93, 58, 26, 0.08);
             --bg-base: #F8F4F0;
             --input-bg: rgba(93, 58, 26, 0.05);
-            --input-text: #2D1B0D;
+            --input-text: #231206;
         }
 
         body.dark-mode {
@@ -133,17 +127,39 @@
         }
 
         .nav-item {
-            padding: 14px 22px;
-            border-radius: 16px;
+            padding: 16px 24px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 5px;
+            gap: 18px;
+            font-weight: 800;
+            font-size: 16px;
+            margin-bottom: 8px;
             color: var(--nav-item-text);
+        }
+
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        /* Dashboard - Blueish Teal */
+        .nav-item:nth-child(1) i {
+            color: #0d9488;
+        }
+
+        /* Staff Hub - Orange in image style */
+        .nav-item:nth-child(2) i {
+            color: #f59e0b;
+        }
+
+        /* Analytics - Indigo/Blue */
+        .nav-item:nth-child(3) i {
+            color: #4f46e5;
         }
 
         .nav-item:hover {
@@ -153,9 +169,14 @@
         }
 
         .nav-item.active {
-            background: var(--nav-item-active-bg);
-            color: var(--nav-item-active-text);
-            box-shadow: 0 4px 15px rgba(166, 121, 10, 0.1);
+            background: linear-gradient(135deg, var(--admin-accent), var(--admin-accent-bright));
+            color: white !important;
+            box-shadow: 0 10px 25px rgba(93, 58, 26, 0.2);
+        }
+
+        .nav-item.active i {
+            color: white !important;
+            transform: scale(1.1);
         }
 
         /* Mode Toggle Switch */
@@ -1142,23 +1163,35 @@
         <div class="admin-layout">
             <!-- Sidebar Navigation -->
             <aside class="admin-sidebar shadow-lg">
-                <div class="sidebar-brand">
-                    <img src="logo.png.png" alt="Logo" width="50">
-                    <div>
-                        <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text-main);">DinePro</h4>
+                <div class="sidebar-brand"
+                    style="padding: 30px 24px; border-bottom: 1px solid var(--glass-border); margin-bottom: 20px;">
+                    <img src="logo.png.png" alt="Logo" width="65"
+                        style="filter: drop-shadow(0 0 12px rgba(93, 58, 26, 0.2));">
+                    <div style="margin-top: 10px;">
+                        <h4
+                            style="margin: 0; font-size: 20px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px;">
+                            DinePro</h4>
                         <span
-                            style="font-size: 10px; color: var(--admin-accent-bright); font-weight: 900; letter-spacing: 1.5px;">ADMIN
+                            style="font-size: 11px; color: var(--admin-accent-bright); font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">ADMIN
                             PORTAL</span>
                     </div>
                 </div>
 
-                <div class="mode-toggle-container">
-                    <button class="mode-toggle-btn" onclick="toggleDisplayMode()">
+                <div style="margin-bottom: 20px; padding: 0 24px;">
+                    <button id="admin-sync-btn" onclick="location.reload()"
+                        style="width: 100%; background: #F8F4F0; border: 1.5px solid #5D3A1A; color: #5D3A1A; padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(93, 58, 26, 0.05);">
+                        <i class="fas fa-sync-alt"></i> SYSTEM REFRESH
+                    </button>
+                </div>
+
+                <div class="mode-toggle-container" style="padding: 0 24px; margin-bottom: 30px;">
+                    <button class="mode-toggle-btn" onclick="toggleDisplayMode()"
+                        style="width: 100%; background: rgba(166, 121, 10, 0.08); border: 1px solid var(--glass-border); color: var(--admin-accent); padding: 12px; border-radius: 15px; font-weight: 800; font-size: 11px;">
                         <i id="mode-icon" class="fas fa-moon"></i> <span id="mode-text">Dark Mode</span>
                     </button>
                 </div>
 
-                <nav class="sidebar-nav">
+                <nav class="sidebar-nav" style="padding: 0 15px;">
 
                     <div class="nav-item active" onclick="switchAdminSection('dashboard', this)">
                         <i class="fas fa-th-large"></i> Dashboard

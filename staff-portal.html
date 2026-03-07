@@ -66,8 +66,6 @@
             --input-text: #ffffff;
         }
 
-
-
         body.portal-mode {
             background-color: var(--admin-bg);
             transition: background-color 0.4s ease, color 0.4s ease;
@@ -206,49 +204,51 @@
         }
 
         .nav-item {
-            padding: 14px 20px;
-            border-radius: 16px;
-            color: var(--text-muted);
+            padding: 16px 24px;
+            border-radius: 18px;
+            color: var(--nav-item-text);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-weight: 600;
-            font-size: 15px;
+            gap: 18px;
+            font-weight: 800;
+            font-size: 16px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: 1px solid transparent;
+            margin-bottom: 8px;
         }
 
         .nav-item i {
-            width: 20px;
+            width: 24px;
             text-align: center;
-            font-size: 18px;
-            transition: color 0.3s ease;
+            font-size: 20px;
+            transition: transform 0.3s ease;
         }
 
-        .nav-item:nth-child(2) i {
-            color: #38bdf8;
-        }
-
-        /* Dashboard */
+        /* Stats/Dashboard */
         .nav-item:nth-child(3) i {
-            color: #4ade80;
+            color: #f59e0b;
         }
 
-        /* Report */
+        /* Daily Report - Yellow/Orange in image */
         .nav-item:nth-child(4) i {
-            color: #fbbf24;
+            color: #f59e0b;
         }
 
-        /* Team Chat */
+        /* Team Chat - Purple in image */
         .nav-item:nth-child(5) i {
-            color: #a78bfa;
+            color: #8b5cf6;
         }
 
-        /* Admin DM */
+        /* Admin DM - Blue */
+        .nav-item:nth-child(6) i {
+            color: #3b82f6;
+        }
+
         .nav-item.active i {
             color: white !important;
+            transform: scale(1.1);
         }
 
         .nav-item:hover {
@@ -870,12 +870,14 @@
                     </button>
                 </div>
 
-                <div style="margin-bottom: 20px; padding: 0 10px;">
+                <div style="margin-bottom: 30px; padding: 0 15px;">
                     <button id="notify-sync-btn" onclick="enableMobileNotifications()"
-                        style="width: 100%; background: rgba(166,121,10,0.1); border: 1px solid var(--admin-accent); color: var(--admin-accent); padding: 12px; border-radius: 12px; cursor: pointer; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        style="width: 100%; background: #F8F4F0; border: 1.5px solid #5D3A1A; color: #5D3A1A; padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(93, 58, 26, 0.05);">
                         <i class="fas fa-bell-slash"></i> SYNC NOTIFICATIONS
                     </button>
-                    <p style="font-size: 8px; color: #94a3b8; text-align: center; margin-top: 5px;">(Required for
+                    <p
+                        style="font-size: 10px; color: #5D3A1A; opacity: 0.6; text-align: center; margin-top: 10px; font-weight: 600;">
+                        (Required for
                         background alerts on mobile)</p>
                 </div>
 
