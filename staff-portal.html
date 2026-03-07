@@ -404,37 +404,106 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--admin-bg);
+            background: #020617;
             z-index: 2005;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('portal_bg.png');
-            background-size: cover;
+            overflow: hidden;
+        }
+
+        .gate-bg-anim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .gate-orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(166, 121, 10, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(50px);
+            animation: orbFloat 20s infinite alternate cubic-bezier(0.445, 0.05, 0.55, 0.95);
+        }
+
+        .gate-orb:nth-child(1) {
+            top: -100px;
+            left: -100px;
+            animation-duration: 25s;
+        }
+
+        .gate-orb:nth-child(2) {
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 30s;
+            background: radial-gradient(circle, rgba(166, 121, 10, 0.1) 0%, transparent 70%);
+        }
+
+        .gate-orb:nth-child(3) {
+            top: 20%;
+            right: 10%;
+            animation-duration: 22s;
+            width: 300px;
+            height: 300px;
+        }
+
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(100px, 50px) scale(1.2);
+            }
         }
 
         .gate-card {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(25px);
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
             padding: 60px 45px;
             border-radius: 40px;
-            border: 1px solid var(--glass-border);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             width: 90%;
             max-width: 440px;
             text-align: center;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
-            animation: gateIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow:
+                0 40px 100px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(166, 121, 10, 0.05);
+            animation: gateIn 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+        }
+
+        .gate-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(166, 121, 10, 0.3), transparent 40%, transparent 60%, rgba(166, 121, 10, 0.2));
+            z-index: -1;
+            border-radius: 42px;
+            opacity: 0.5;
         }
 
         @keyframes gateIn {
             from {
                 opacity: 0;
                 transform: scale(0.9) translateY(40px);
+                filter: blur(10px);
             }
 
             to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
+                filter: blur(0);
             }
         }
 
@@ -584,6 +653,11 @@
 
     <!-- Auth Gate -->
     <div id="portal-gate">
+        <div class="gate-bg-anim">
+            <div class="gate-orb"></div>
+            <div class="gate-orb"></div>
+            <div class="gate-orb"></div>
+        </div>
         <div class="gate-card">
             <img src="logo.png.png" width="80" style="margin-bottom: 20px;">
             <h2>Staff Portal Login</h2>
