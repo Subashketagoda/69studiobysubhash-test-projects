@@ -107,6 +107,9 @@
                     </li>
                     <li><a href="#booking">BOOKING</a></li>
                     <li><a href="contact.html">CONTACT US</a></li>
+                    <li><a href="#" id="installApp"
+                            style="color: var(--gold); border: 1px solid var(--gold); padding: 5px 15px; border-radius: 20px; font-weight: 800; font-size: 11px; margin-left: 10px;">GET
+                            APP</a></li>
                 </ul>
                 <div class="mobile-toggle">
                     <span></span>
@@ -531,6 +534,39 @@
     <!-- Firebase Global Sync -->
     <script type="module" src="firebase-init.js"></script>
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('SW Registered', reg))
+                .catch(err => console.log('SW Failed', err));
+        }
+
+        // Handle PWA Install Prompt
+        let deferredPrompt;
+        const installBtn = document.getElementById('installApp');
+        if (installBtn) {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'inline-block';
+            });
+
+            installBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                } else {
+                    alert("To install the DinePro App: \n\n1. Tap the Share icon (iOS) or Menu icon (Android)\n2. Select 'Add to Home Screen'");
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>
