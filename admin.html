@@ -38,6 +38,9 @@
             --bg-base: #020617;
             --input-bg: rgba(255, 255, 255, 0.05);
             --input-text: #ffffff;
+            --chat-bg: rgba(0, 0, 0, 0.3);
+            --chat-wrapper: rgba(15, 23, 42, 0.6);
+            --panel-bg: rgba(0, 0, 0, 0.2);
         }
 
         .admin-main table td,
@@ -45,7 +48,9 @@
         .admin-view p,
         .admin-view h2,
         .admin-view h3,
-        .admin-view div:not(.stat-icon) {
+        .admin-view div:not(.stat-icon),
+        .dashboard-header h1,
+        .dashboard-header p {
             color: var(--text-main) !important;
         }
 
@@ -57,9 +62,43 @@
             color: var(--admin-accent) !important;
         }
 
+        .dashboard-header p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
         .admin-main .table-container {
             background: var(--admin-card) !important;
             border: 1px solid var(--glass-border) !important;
+        }
+
+        /* Targeted visibility fix for Dashboard title/subtitle */
+        #admin-view-title {
+            color: var(--text-main) !important;
+            display: block !important;
+        }
+
+        #admin-view-subtitle {
+            color: var(--text-muted) !important;
+            display: block !important;
+            opacity: 1 !important;
+            margin-top: 5px;
+        }
+
+        body.light-mode #admin-view-title {
+            color: #231206 !important;
+        }
+
+        body.light-mode #admin-view-subtitle {
+            color: #64748b !important;
+        }
+
+        body:not(.light-mode) #admin-view-title {
+            color: #f8fafc !important;
+        }
+
+        body:not(.light-mode) #admin-view-subtitle {
+            color: #cbd5e1 !important;
         }
 
         body.light-mode {
@@ -81,6 +120,9 @@
             --bg-base: #f8fafc;
             --input-bg: #f1f5f9;
             --input-text: #231206;
+            --chat-bg: #ffffff;
+            --chat-wrapper: #f1f5f9;
+            --panel-bg: #f8fafc;
         }
 
         body.admin-mode {
@@ -431,10 +473,13 @@
         .dashboard-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
+            align-items: center;
+            margin-bottom: 50px;
+            padding: 30px 40px;
+            background: var(--admin-card);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--card-shadow);
         }
 
         /* Admin Layout Structure */
@@ -598,6 +643,53 @@
             border: 1px solid var(--glass-border);
             overflow: hidden;
             box-shadow: var(--card-shadow);
+        }
+
+        .admin-card {
+            background: var(--admin-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            border-color: var(--admin-accent);
+        }
+
+        #admin-chat-area {
+            background: var(--chat-bg) !important;
+            border: 1px solid var(--glass-border) !important;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-chat-logs-container,
+        .admin-chat-input-wrapper {
+            background: var(--chat-wrapper) !important;
+            border: 1px solid var(--glass-border) !important;
+        }
+
+        .staff-activity-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .staff-activity-item:hover {
+            background: var(--nav-item-active-bg);
+        }
+
+        .staff-report-item {
+            padding: 20px;
+            background: var(--panel-bg);
+            border-radius: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--admin-accent);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
 
@@ -1270,6 +1362,9 @@
                     <div class="nav-item" onclick="switchAdminSection('staff-hub', this)">
                         <i class="fas fa-user-tie"></i> Staff Hub
                     </div>
+                    <div class="nav-item" onclick="switchAdminSection('broadcast', this)">
+                        <i class="fas fa-bullhorn"></i> Broadcast Hub
+                    </div>
                     <div class="nav-item" onclick="switchAdminSection('analytics', this)">
                         <i class="fas fa-chart-line"></i> Analytics
                     </div>
@@ -1287,15 +1382,12 @@
                 <div class="container-fluid">
                     <header class="dashboard-header">
                         <div id="header-context">
-                            <h1 style="font-weight: 800; font-size: 28px; color: var(--text-main);"
-                                id="admin-view-title">Admin Dashboard</h1>
-                            <p style="color: var(--text-muted);" id="admin-view-subtitle">Real-time performance overview
-                            </p>
+                            <h1 style="font-weight: 800; font-size: 28px;" id="admin-view-title">Admin Dashboard</h1>
+                            <p id="admin-view-subtitle">Real-time performance overview</p>
                         </div>
                         <div class="header-actions">
-                            <button class="logout-btn"
-                                style="background: var(--nav-item-active-bg); color: var(--admin-accent); border-color: var(--glass-border);"
-                                onclick="clearStats()">Reset Stats</button>
+                            <button class="btn-accent" style="font-size: 13px; height: 45px; padding: 0 25px;"
+                                onclick="clearStats()"><i class="fas fa-history"></i> Reset Dashboard Stats</button>
                         </div>
                     </header>
 
@@ -1415,176 +1507,205 @@
                             <!-- Column 1: Add/Manage Staff -->
                             <div>
                                 <div class="admin-card">
-                                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--accent-color);">Add
-                                        New Member</h3>
+                                    <h3
+                                        style="margin-bottom: 25px; font-size: 18px; color: var(--admin-accent); font-weight: 800;">
+                                        Add
+                                        New Team Member</h3>
                                     <form id="addStaffHubForm">
                                         <div
-                                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                                            <input type="text" id="newStaffNameHub" placeholder="Full Name" required
-                                                style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
-                                            <input type="password" id="newStaffPassHub" placeholder="Password" required
-                                                style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
+                                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                                            <div>
+                                                <label
+                                                    style="display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 1px;">Full
+                                                    Name</label>
+                                                <input type="text" id="newStaffNameHub" placeholder="e.g. John Doe"
+                                                    required
+                                                    style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; color: var(--input-text); width: 100%;">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    style="display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 1px;">Access
+                                                    Password</label>
+                                                <input type="password" id="newStaffPassHub" placeholder="••••••••"
+                                                    required
+                                                    style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; color: var(--input-text); width: 100%;">
+                                            </div>
                                         </div>
                                         <div
-                                            style="margin-bottom: 15px; display: flex; gap: 15px; align-items: center;">
+                                            style="margin-bottom: 20px; display: flex; gap: 20px; align-items: center; background: var(--panel-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border);">
                                             <div id="photoPreviewHub"
-                                                style="width: 50px; height: 50px; border-radius: 50%; background: var(--input-bg); border: 1px dashed var(--glass-border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                                style="width: 60px; height: 60px; border-radius: 50%; background: var(--input-bg); border: 2px dashed var(--admin-accent); flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;">
                                                 <i class="fas fa-camera"
-                                                    style="font-size: 16px; color: var(--text-muted);"></i>
+                                                    style="font-size: 20px; color: var(--admin-accent);"></i>
                                             </div>
                                             <div style="flex-grow: 1;">
                                                 <label for="newStaffPhotoFileHub"
-                                                    style="display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px;">Upload
-                                                    Profile Photo</label>
+                                                    style="display: block; font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 5px;">Profile
+                                                    Picture</label>
                                                 <input type="file" id="newStaffPhotoFileHub" accept="image/*"
-                                                    style="width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); padding: 5px; border-radius: 8px; color: var(--input-text); font-size: 12px;">
+                                                    style="width: 100%; font-size: 12px; color: var(--text-muted);">
                                                 <input type="hidden" id="newStaffPhotoBase64Hub">
                                             </div>
                                         </div>
-                                        <div style="display: flex; gap: 15px;">
+                                        <div style="display: grid; grid-template-columns: 1fr auto; gap: 15px;">
                                             <select id="newStaffLevelHub"
-                                                style="flex-grow: 1; background: var(--input-bg); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px; color: var(--input-text);">
+                                                style="background: var(--input-bg); border: 1px solid var(--glass-border); padding: 14px; border-radius: 12px; color: var(--input-text); font-weight: 600;">
                                                 <option value="level1">Level 1 - General Staff</option>
                                                 <option value="level2">Level 2 - Management</option>
                                                 <option value="level3">Level 3 - Executive Board</option>
                                             </select>
-                                            <button type="submit" class="logout-btn"
-                                                style="background: var(--accent-color); border: none; color: white; font-weight: 700; padding: 0 25px;">Create
-                                                User</button>
+                                            <button type="submit" class="btn-accent"
+                                                style="padding: 0 40px; height: 50px; border-radius: 12px;">Create
+                                                Member</button>
                                         </div>
                                     </form>
                                 </div>
 
                                 <div class="admin-card" style="margin-top: 30px;">
-                                    <h3 style="margin-bottom: 20px; font-size: 18px; color: var(--text-muted);">
-                                        Registered Team
-                                    </h3>
-                                    <div style="max-height: 400px; overflow-y: auto;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                        <h3
+                                            style="margin: 0; font-size: 18px; color: var(--text-main); font-weight: 800;">
+                                            Team Registry</h3>
+                                        <span
+                                            style="font-size: 11px; font-weight: 800; color: var(--admin-accent); text-transform: uppercase; letter-spacing: 1px;">ACTIVE
+                                            PERSONNEL</span>
+                                    </div>
+                                    <div
+                                        style="max-height: 350px; overflow-y: auto; border-radius: 15px; background: var(--panel-bg); border: 1px solid var(--glass-border);">
                                         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                                             <tbody id="admin-staff-list-hub"></tbody>
                                         </table>
                                     </div>
                                 </div>
 
-                                <div class="admin-card" style="margin-top: 40px;">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                                        <h3 style="margin: 0; font-size: 18px; color: var(--accent-color);">Team
-                                            Communications</h3>
-                                        <select id="admin-chat-level-select" onchange="loadAdminChat()"
-                                            class="form-control"
-                                            style="width: auto; padding: 5px 15px; height: 35px; min-width: 150px;">
-                                            <option value="level1">General Staff</option>
-                                            <option value="level2">Management</option>
-                                            <option value="level3">Executive Board</option>
-                                        </select>
-                                    </div>
-                                    <div id="admin-chat-area"
-                                        style="height: 350px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 15px; padding: 20px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;">
-                                        <!-- Messages will appear here -->
-                                    </div>
-                                    <div
-                                        style="display: flex; gap: 10px; background: rgba(15, 23, 42, 0.6); padding: 10px; border-radius: 20px; border: 1px solid var(--glass-border);">
-                                        <input type="text" id="admin-chat-input" placeholder="Broadcast to team..."
-                                            class="form-control"
-                                            style="border: none !important; background: transparent !important;">
-                                        <button onclick="sendAdminChatMessage()" class="btn-accent"
-                                            style="width: 45px; height: 45px; padding: 0; justify-content: center;">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Column 2: Activity & Monitoring -->
-                            <div>
-                                <div class="admin-card" style="margin-bottom: 30px;">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                                        <h3 style="margin: 0; font-size: 18px; color: #059669;">Online Staff Status</h3>
-                                        <div
-                                            style="font-size: 14px; font-weight: 700; background: rgba(5,150,105,0.1); color: #059669; padding: 5px 12px; border-radius: 20px;">
-                                            <span id="staff-on-duty-count-hub">0</span> ON DUTY
-                                        </div>
-                                    </div>
-                                    <div id="admin-staff-logs-hub"
-                                        style="font-size: 13px; max-height: 250px; overflow-y: auto;"></div>
-                                </div>
-
-                                <div class="admin-card">
-                                    <div
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                                        <h3 style="margin: 0; font-size: 18px; color: var(--text-muted);">Staff Work
-                                            Reports</h3>
-                                        <div style="font-size: 12px; color: var(--text-muted);">TODAY</div>
-                                    </div>
-                                    <div id="admin-staff-reports-hub"
-                                        style="font-size: 13px; max-height: 400px; overflow-y: auto;"></div>
-                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Section: Analytics -->
-                    <div id="analytics-section" class="admin-view">
-                        <div class="dashboard-grid" style="grid-template-columns: 1fr;">
-                            <div class="stat-card" style="padding: 40px;">
+                        <!-- Column 2: Activity & Monitoring -->
+                        <div>
+                            <div class="admin-card" style="margin-bottom: 30px;">
                                 <div
-                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-                                    <div>
-                                        <h3 style="margin: 0; font-size: 20px; color: var(--text-main);">Visitor Traffic
-                                            Analytics</h3>
-                                        <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0 0 0;">Daily
-                                            unique
-                                            visits over the last 7 days</p>
-                                    </div>
-                                    <div style="text-align: right;">
-                                        <div id="traffic-percent"
-                                            style="color: #059669; font-weight: 700; font-size: 14px;">+12% <i
-                                                class="fas fa-arrow-up"></i></div>
-                                        <div style="font-size: 11px; opacity: 0.5;">VS LAST WEEK</div>
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                    <h3 style="margin: 0; font-size: 18px; color: #10B981; font-weight: 800;">
+                                        Real-time Presence</h3>
+                                    <div
+                                        style="font-size: 11px; font-weight: 900; background: rgba(16,185,129,0.1); color: #10B981; padding: 6px 15px; border-radius: 50px; border: 1px solid rgba(16,185,129,0.2);">
+                                        <span id="staff-on-duty-count-hub">0</span> ACTIVE
                                     </div>
                                 </div>
-                                <div style="height: 350px; width: 100%; position: relative;">
-                                    <canvas id="trafficChart"></canvas>
+                                <div id="admin-staff-logs-hub" class="admin-chat-logs-container"
+                                    style="font-size: 13px; max-height: 300px; overflow-y: auto; border-radius: 15px;">
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="dashboard-grid" style="margin-top: 30px;">
-                            <div class="stat-card">
-                                <div class="stat-icon" style="background: rgba(37,99,235,0.1); color: #2563eb;"><i
-                                        class="fas fa-search"></i></div>
-                                <div class="stat-info">
-                                    <h3>Avg. Session Time</h3>
-                                    <div class="value" id="stat-avg-session">0m 0s</div>
+                            <div class="admin-card">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                                    <h3 style="margin: 0; font-size: 18px; color: var(--text-main); font-weight: 800;">
+                                        Operational Reports</h3>
+                                    <div
+                                        style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">
+                                        TODAY</div>
                                 </div>
-                            </div>
-                            <div class="stat-card">
-                                <div class="stat-icon"
-                                    style="background: rgba(166,121,10,0.1); color: var(--accent-color);"><i
-                                        class="fas fa-bullseye"></i></div>
-                                <div class="stat-info">
-                                    <h3>Conversion Rate</h3>
-                                    <div class="value" id="stat-conv-rate">0.0%</div>
-                                </div>
+                                <div id="admin-staff-reports-hub"
+                                    style="font-size: 13px; max-height: 500px; overflow-y: auto;"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
+
+                <!-- Section: Broadcast Hub (Standalone) -->
+                <div id="broadcast-section" class="admin-view">
+                    <div class="admin-card" style="max-width: 1000px; margin: 0 auto; padding: 40px;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                            <h3 style="margin: 0; font-size: 24px; color: var(--admin-accent); font-weight: 800;">
+                                Broadcast Hub</h3>
+                            <select id="admin-chat-level-select" onchange="loadAdminChat()" class="form-control"
+                                style="width: auto; padding: 8px 20px; height: 45px; min-width: 200px; font-size: 14px; font-weight: 700; border-color: var(--admin-accent); border-radius: 15px;">
+                                <option value="level1">General Staff Channel</option>
+                                <option value="level2">Management Channel</option>
+                                <option value="level3">Executive Board Only</option>
+                            </select>
+                        </div>
+                        <div id="admin-chat-area"
+                            style="height: 500px; overflow-y: auto; border-radius: 25px; padding: 30px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 18px; scroll-behavior: smooth; background: var(--chat-bg); border: 1px solid var(--glass-border);">
+                            <!-- Messages will appear here -->
+                        </div>
+                        <div class="admin-chat-input-wrapper"
+                            style="display: flex; gap: 15px; padding: 15px; border-radius: 100px; background: var(--chat-wrapper); border: 1px solid var(--glass-border);">
+                            <input type="text" id="admin-chat-input"
+                                placeholder="Type a broadcast message to the team..." class="form-control"
+                                style="border: none !important; background: transparent !important; padding-left: 25px; font-weight: 500; font-size: 15px; flex-grow: 1; color: var(--input-text);">
+                            <button onclick="sendAdminChatMessage()" class="btn-accent"
+                                style="width: 55px; height: 55px; padding: 0; border-radius: 50%; min-width: 55px; justify-content: center;">
+                                <i class="fas fa-paper-plane" style="font-size: 18px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Analytics -->
+                <div id="analytics-section" class="admin-view">
+                    <div class="dashboard-grid" style="grid-template-columns: 1fr;">
+                        <div class="stat-card" style="padding: 40px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 20px; color: var(--text-main);">Visitor Traffic
+                                        Analytics</h3>
+                                    <p style="color: var(--text-muted); font-size: 13px; margin: 5px 0 0 0;">Daily
+                                        unique
+                                        visits over the last 7 days</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div id="traffic-percent"
+                                        style="color: #059669; font-weight: 700; font-size: 14px;">+12% <i
+                                            class="fas fa-arrow-up"></i></div>
+                                    <div style="font-size: 11px; opacity: 0.5;">VS LAST WEEK</div>
+                                </div>
+                            </div>
+                            <div style="height: 350px; width: 100%; position: relative;">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid" style="margin-top: 30px;">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(37,99,235,0.1); color: #2563eb;"><i
+                                    class="fas fa-search"></i></div>
+                            <div class="stat-info">
+                                <h3>Avg. Session Time</h3>
+                                <div class="value" id="stat-avg-session">0m 0s</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: rgba(166,121,10,0.1); color: var(--accent-color);"><i
+                                    class="fas fa-bullseye"></i></div>
+                            <div class="stat-info">
+                                <h3>Conversion Rate</h3>
+                                <div class="value" id="stat-conv-rate">0.0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
-        <div class="actions-section">
-            <div class="action-list"><a href="https://formspree.io/forms/mbdaqjyv/submissions" target="_blank"
-                    class="action-item"><i class="fas fa-inbox"></i><span>Formspree Dashboard (Email
-                        Backup)</span></a><a href="index.html" class="action-item"><i
-                        class="fas fa-external-link-alt"></i><span>Preview Website</span></a></div>
-        </div>
-        <footer
-            style="margin-top: 100px; padding: 40px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted); background: none !important; border-bottom: none;">
-            <p style="color: var(--text-muted);">&copy;
-                2026 DinePro Advisors | Secure Admin Portal </p>
-        </footer>
+        </main>
+    </div>
+    <div class="actions-section">
+        <div class="action-list"><a href="https://formspree.io/forms/mbdaqjyv/submissions" target="_blank"
+                class="action-item"><i class="fas fa-inbox"></i><span>Formspree Dashboard (Email
+                    Backup)</span></a><a href="index.html" class="action-item"><i
+                    class="fas fa-external-link-alt"></i><span>Preview Website</span></a></div>
+    </div>
+    <footer
+        style="margin-top: 100px; padding: 40px 0; border-top: 1px solid var(--glass-border); text-align: center; color: var(--text-muted); background: none !important; border-bottom: none;">
+        <p style="color: var(--text-muted);">&copy;
+            2026 DinePro Advisors | Secure Admin Portal </p>
+    </footer>
     </div>
     <!-- Staff Management Modal -->
     <div id="staffManagementModal" class="modal-overlay">
@@ -1849,6 +1970,9 @@
             } else if (sectionId === 'staff-hub') {
                 title.innerText = 'Staff Central Hub';
                 subtitle.innerText = 'Manage your team and client inquiries';
+            } else if (sectionId === 'broadcast') {
+                title.innerText = 'Broadcast Hub';
+                subtitle.innerText = 'Global team communications';
                 loadAdminChat();
             } else if (sectionId === 'analytics') {
                 title.innerText = 'Data & Growth Analytics';
@@ -2494,12 +2618,15 @@
                             if (last.action === 'IN') onDutyCount++;
 
                             const logHtml = `
-                                <div style="padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                                    <div>
-                                        <strong style="color: ${statusColor}">${name}</strong>
-                                        <span style="font-size: 11px; color: #94a3b8; margin-left: 10px;">${last.action}</span>
+                                <div class="staff-activity-item">
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <div style="width: 8px; height: 8px; border-radius: 50%; background: ${statusColor};"></div>
+                                        <div>
+                                            <strong style="color: var(--text-main); font-size: 14px;">${name}</strong>
+                                            <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px;">${last.action === 'IN' ? 'Currently Active' : 'Off Duty'}</div>
+                                        </div>
                                     </div>
-                                    <span style="font-size: 11px; opacity: 0.5;">${new Date(last.time).toLocaleTimeString()}</span>
+                                    <span style="font-size: 11px; color: var(--text-muted); background: var(--panel-bg); padding: 4px 8px; border-radius: 5px;">${new Date(last.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                 </div>`;
 
                             if (logsContainer) logsContainer.innerHTML += logHtml;
@@ -2514,12 +2641,12 @@
                         if (dates[today]) {
                             reportsCount++;
                             const reportHtml = `
-                                <div style="padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--accent-color);">
-                                    <div style="font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between;">
-                                        <span>${name}</span>
-                                        <span style="font-size: 10px; opacity: 0.5;">${new Date(dates[today].timestamp).toLocaleTimeString()}</span>
+                                <div class="staff-report-item">
+                                    <div style="font-weight: 800; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="color: var(--text-main); font-size: 14px;">${name}</span>
+                                        <span style="font-size: 10px; color: var(--admin-accent); background: var(--nav-item-active-bg); padding: 4px 10px; border-radius: 20px;">${new Date(dates[today].timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
-                                    <div style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">${dates[today].text}</div>
+                                    <div style="font-size: 13px; color: var(--text-muted); line-height: 1.6; font-weight: 500;">${dates[today].text}</div>
                                 </div>`;
 
                             if (reportsContainer) reportsContainer.innerHTML += reportHtml;
@@ -2690,7 +2817,7 @@
                 area.innerHTML = '';
 
                 if (!data) {
-                    area.innerHTML = '<div style="text-align: center; color: #64748b; font-size: 12px; margin-top: 100px;">No messages in this room yet.</div>';
+                    area.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 150px; font-weight: 500;">No team communications yet.</div>';
                     return;
                 }
 
@@ -2700,15 +2827,17 @@
 
                     bubble.style.background = isAdmin ? 'var(--admin-accent)' : 'var(--input-bg)';
                     bubble.style.color = isAdmin ? '#fff' : 'var(--text-main)';
-                    bubble.style.padding = '10px 15px';
-                    bubble.style.borderRadius = '15px';
-                    bubble.style.maxWidth = '85%';
+                    bubble.style.padding = '12px 18px';
+                    bubble.style.borderRadius = isAdmin ? '20px 20px 4px 20px' : '20px 20px 20px 4px';
+                    bubble.style.maxWidth = '80%';
                     bubble.style.alignSelf = isAdmin ? 'flex-end' : 'flex-start';
-                    bubble.style.fontSize = '13px';
+                    bubble.style.fontSize = '14px';
+                    bubble.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
+                    bubble.style.border = isAdmin ? 'none' : '1px solid var(--glass-border)';
 
                     bubble.innerHTML = `
-                        <div style="font-size: 9px; font-weight: 800; opacity: 0.6; margin-bottom: 4px; text-transform: uppercase;">${msg.user}</div>
-                        <div>${msg.text}</div>
+                        <div style="font-size: 10px; font-weight: 900; opacity: 0.7; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">${msg.user}</div>
+                        <div style="line-height: 1.5;">${msg.text}</div>
                     `;
                     area.appendChild(bubble);
                 });
