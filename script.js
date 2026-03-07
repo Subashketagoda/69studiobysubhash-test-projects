@@ -363,7 +363,7 @@ document.querySelectorAll('.nav-links a').forEach(link => {
 // Dropdown toggle for mobile
 dropdowns.forEach(dropdown => {
     dropdown.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 1024) {
             dropdown.classList.toggle('active');
         }
     });
