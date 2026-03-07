@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dinepro-v1';
+const CACHE_NAME = 'dinepro-v2';
 const ASSETS = [
     '/',
     '/index.html',
@@ -7,6 +7,7 @@ const ASSETS = [
     '/style.css',
     '/script.js',
     '/logo.png.png',
+    '/app-logo.jpg',
     '/manifest.json',
     '/manifest-staff.json',
     '/manifest-admin.json'
@@ -47,8 +48,8 @@ self.addEventListener('push', function (event) {
     const data = event.data.json();
     const options = {
         body: data.body,
-        icon: 'logo.png.png',
-        badge: 'logo.png.png',
+        icon: 'app-logo.jpg',
+        badge: 'app-logo.jpg',
         vibrate: [200, 100, 200, 100, 200, 100, 400],
         requireInteraction: true,
         data: {
