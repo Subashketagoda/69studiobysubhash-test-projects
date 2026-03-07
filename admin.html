@@ -19,45 +19,68 @@
     <meta name="apple-mobile-web-app-title" content="Admin Panel">
     <style>
         :root {
-            /* Standard Colors (Modern Mode) */
-            --admin-bg: #F8F4F0;
-            --admin-card: #ffffff;
-            --admin-accent: #5D3A1A;
-            --admin-accent-bright: #A6790A;
-            --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(93, 58, 26, 0.2);
-            --text-main: #231206;
-            --text-muted: #5D3A1A;
+            /* Standard Colors (Premium Dark Mode Default) */
+            --admin-bg: #020617;
+            --admin-card: rgba(15, 23, 42, 0.85);
+            --admin-accent: #A6790A;
+            --admin-accent-bright: #D4AF37;
+            --glass: rgba(10, 14, 23, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
             --sidebar-width: 280px;
-            --sidebar-bg: #ffffff;
+            --sidebar-bg: rgba(10, 14, 23, 0.9);
             --nav-item-bg: transparent;
-            --nav-item-text: #231206;
-            --nav-item-active-bg: rgba(166, 121, 10, 0.12);
-            --nav-item-active-text: #5D3A1A;
-            --card-shadow: 0 15px 45px rgba(93, 58, 26, 0.08);
-            --bg-base: #F8F4F0;
-            --input-bg: rgba(93, 58, 26, 0.05);
-            --input-text: #231206;
+            --nav-item-text: #cbd5e1;
+            --nav-item-active-bg: rgba(166, 121, 10, 0.2);
+            --nav-item-active-text: #D4AF37;
+            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --bg-base: #020617;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --input-text: #ffffff;
+        }
+
+        /* FORCE HIGH CONTRAST DATA VISIBILITY */
+        .admin-main table td,
+        .admin-main table th,
+        .admin-view p,
+        .admin-view h2,
+        .admin-view h3,
+        .admin-view div:not(.stat-icon) {
+            color: #f8fafc !important;
+        }
+
+        .stat-card .value,
+        #stat-visitors,
+        #stat-messages,
+        #stat-bookings,
+        #stat-staff {
+            color: #ffffff !important;
+        }
+
+        .admin-main .table-container {
+            background: rgba(15, 23, 42, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
 
         body.dark-mode {
-            /* Dark Mode Colors */
+            /* Keep consistency with Premium mode */
             --admin-bg: #0f172a;
-            --admin-card: rgba(15, 23, 42, 0.75);
+            --admin-card: rgba(15, 23, 42, 0.9);
             --admin-accent: #D4AF37;
             --admin-accent-bright: #D4AF37;
-            --glass: rgba(30, 41, 59, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(30, 41, 59, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.12);
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --sidebar-bg: rgba(15, 23, 42, 0.65);
+            --text-muted: #cbd5e1;
+            --sidebar-bg: rgba(15, 23, 42, 0.85);
             --nav-item-bg: transparent;
-            --nav-item-text: #94a3b8;
-            --nav-item-active-bg: rgba(166, 121, 10, 0.15);
+            --nav-item-text: #cbd5e1;
+            --nav-item-active-bg: rgba(166, 121, 10, 0.25);
             --nav-item-active-text: #D4AF37;
-            --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            --card-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
             --bg-base: #020617;
-            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-bg: rgba(255, 255, 255, 0.1);
             --input-text: #ffffff;
         }
 
@@ -408,12 +431,6 @@
             transform: scale(0.95);
         }
 
-        #admin-panel {
-            display: none;
-            padding: 60px 0;
-            flex-grow: 1;
-        }
-
         .dashboard-header {
             display: flex;
             justify-content: space-between;
@@ -427,6 +444,9 @@
         #admin-panel {
             display: none;
             flex-grow: 1;
+            padding: 0;
+            background: var(--admin-bg);
+            min-height: 100vh;
         }
 
         .admin-layout {
@@ -858,6 +878,47 @@
             background: rgba(15, 23, 42, 0.8);
         }
 
+        /* --- GLOBAL MODAL CONTRAST FIX --- */
+        .modal-overlay .modal-content h2,
+        .modal-overlay .modal-content h3,
+        .modal-overlay .modal-content h4,
+        .modal-overlay .modal-content label,
+        .modal-overlay .modal-content th {
+            color: #ffffff !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-overlay .modal-content td {
+            color: #f8fafc !important;
+        }
+
+        .modal-overlay .modal-content .value {
+            color: #D4AF37 !important;
+            font-weight: 800;
+        }
+
+        .modal-overlay .modal-content .report-stat-card h4 {
+            color: rgba(255, 255, 255, 0.7) !important;
+            letter-spacing: 1.5px;
+        }
+
+        .modal-overlay .modal-content .close-modal {
+            color: #ffffff !important;
+            opacity: 0.8;
+        }
+
+        .modal-overlay .modal-content input,
+        .modal-overlay .modal-content select,
+        .modal-overlay .modal-content textarea {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .modal-overlay .modal-content input::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+        }
+
         /* Modals */
         .modal,
         .modal-overlay {
@@ -1191,7 +1252,7 @@
 
                 <div style="margin-bottom: 20px; padding: 0 24px;">
                     <button id="admin-sync-btn" onclick="location.reload()"
-                        style="width: 100%; background: #F8F4F0; border: 1.5px solid #5D3A1A; color: #5D3A1A; padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(93, 58, 26, 0.05);">
+                        style="width: 100%; background: rgba(166, 121, 10, 0.1); border: 1.5px solid var(--admin-accent); color: var(--admin-accent); padding: 15px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 12px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
                         <i class="fas fa-sync-alt"></i> SYSTEM REFRESH
                     </button>
                 </div>
@@ -1248,6 +1309,23 @@
                                 <div class="stat-info">
                                     <h3>Total Visitors</h3>
                                     <div class="value" id="stat-visitors">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon"
+                                    style="background: rgba(166,121,10,0.1); color: var(--admin-accent);"><i
+                                        class="fas fa-envelope"></i></div>
+                                <div class="stat-info">
+                                    <h3>New Messages</h3>
+                                    <div class="value" id="stat-messages">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: rgba(212,175,55,0.1); color: #D4AF37;"><i
+                                        class="fas fa-calendar-alt"></i></div>
+                                <div class="stat-info">
+                                    <h3>New Bookings</h3>
+                                    <div class="value" id="stat-bookings">0</div>
                                 </div>
                             </div>
                             <div class="stat-card" style="cursor: pointer;"
@@ -1867,6 +1945,7 @@
                 if (!data) {
                     noMsg.style.display = 'block';
                     document.getElementById('stat-messages').innerText = 0;
+                    list.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px;">No messages found</td></tr>`;
                     return;
                 }
 
@@ -1877,18 +1956,18 @@
 
                 submissions.forEach(([key, sub]) => {
                     const row = document.createElement('tr');
-                    row.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                    row.style.borderTop = '1px solid rgba(255,255,255,0.06)';
                     row.innerHTML = `
-                        <td style="padding: 15px 20px; font-size: 14px; color: var(--text-muted);">${sub.date}</td>
+                        <td style="padding: 15px 20px; font-size: 14px; color: #cbd5e1;">${sub.date}</td>
                         <td style="padding: 15px 20px;">
-                            <div style="font-weight: 700; color: var(--text-main);">${sub.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${sub.email}</div>
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                            <div style="font-weight: 700; color: #ffffff;">${sub.name}</div>
+                            <div style="font-size: 12px; color: #94a3b8;">${sub.email}</div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
                                 <i class="fas fa-phone" style="font-size: 10px; opacity: 0.7; margin-right: 4px;"></i>${sub.phone || 'N/A'}
                             </div>
                         </td>
-                        <td style="padding: 15px 20px; font-size: 14px; color: var(--text-main);">${sub.subject || 'No Subject'}</td>
-                        <td style="padding: 15px 20px; font-size: 14px; color: var(--text-muted); max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${sub.message}">${sub.message}
+                        <td style="padding: 15px 20px; font-size: 14px; color: #f8fafc;">${sub.subject || 'No Subject'}</td>
+                        <td style="padding: 15px 20px; font-size: 14px; color: #94a3b8; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${sub.message}">${sub.message}
                             <div style="margin-top: 8px;">
                                 <button onclick="deleteSubmission('${key}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 11px; padding: 0;">Delete</button>
                             </div>
@@ -1911,6 +1990,7 @@
                 if (!data) {
                     noBookings.style.display = 'block';
                     document.getElementById('stat-bookings').innerText = 0;
+                    bookingList.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px;">No bookings found</td></tr>`;
                     allBookingsCached = [];
                     return;
                 }
@@ -1923,17 +2003,17 @@
 
                 bookings.forEach(([key, booking]) => {
                     const row = document.createElement('tr');
-                    row.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                    row.style.borderTop = '1px solid rgba(255,255,255,0.06)';
 
                     row.innerHTML = `
-                        <td style="padding: 15px 20px; color: var(--text-main);">
-                            <div style="font-weight: 600;">${booking.date}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${booking.time}</div>
+                        <td style="padding: 15px 20px; color: #ffffff;">
+                            <div style="font-weight: 700;">${booking.date}</div>
+                            <div style="font-size: 12px; color: #cbd5e1;">${booking.time}</div>
                         </td>
-                        <td style="padding: 15px 20px; color: var(--text-main);">
-                            <div style="font-weight: 600;">${booking.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${booking.email}</div>
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                        <td style="padding: 15px 20px; color: #ffffff;">
+                            <div style="font-weight: 700;">${booking.name}</div>
+                            <div style="font-size: 12px; color: #cbd5e1;">${booking.email}</div>
+                            <div style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">
                                 <i class="fas fa-phone" style="font-size: 10px; opacity: 0.7; margin-right: 4px;"></i>${booking.phone}
                             </div>
                         </td>
@@ -1965,6 +2045,7 @@
 
                 if (!data) {
                     noReviews.style.display = 'block';
+                    reviewList.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 14px;">No reviews yet</td></tr>`;
                     return;
                 }
 
@@ -1977,14 +2058,14 @@
                     for (let i = 1; i <= 5; i++) starsHtml += i <= rating ? '★' : '☆';
 
                     const row = document.createElement('tr');
-                    row.style.borderTop = '1px solid rgba(255,255,255,0.05)';
+                    row.style.borderTop = '1px solid rgba(255,255,255,0.06)';
                     row.innerHTML = `
                         <td style="padding: 15px 20px;">
-                            <div style="font-weight: 700; color: var(--text-main);">${review.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${review.date}</div>
+                            <div style="font-weight: 700; color: #ffffff;">${review.name}</div>
+                            <div style="font-size: 12px; color: #cbd5e1; margin-top: 4px;">${review.date}</div>
                         </td>
                         <td style="padding: 15px 20px; color: #FFD700; font-size: 12px; letter-spacing: 2px;">${starsHtml}</td>
-                        <td style="padding: 15px 20px; font-size: 13px; color: var(--text-main); max-width: 300px; font-style: italic;">"${review.text}"</td>
+                        <td style="padding: 15px 20px; font-size: 13px; color: #f8fafc; max-width: 300px; font-style: italic;">"${review.text}"</td>
                         <td style="padding: 15px 20px; text-align: center;">
                             <button onclick="deleteReview('${key}')" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; transition: all 0.3s ease;"><i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Delete</button>
                         </td>`;
@@ -2077,6 +2158,13 @@
             const revenueEl = document.getElementById('report-revenue');
 
             list.innerHTML = '';
+            if (allBookingsCached.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 40px; color: rgba(255,255,255,0.5); font-size: 14px;">No data found</td></tr>`;
+                totalEl.innerText = 0;
+                monthEl.innerText = 0;
+                revenueEl.innerText = 'LKR 0';
+                return;
+            }
             totalEl.innerText = allBookingsCached.length;
 
             // Stats for report
@@ -2095,17 +2183,17 @@
 
             allBookingsCached.forEach(([key, b]) => {
                 const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+                tr.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
 
                 tr.innerHTML = `
-                    <td style="padding: 15px; font-size: 13px; color: var(--text-main);">${b.date}</td>
-                    <td style="padding: 15px; color: var(--text-main);">
-                        <div style="font-size: 14px; font-weight: 700;">${b.name}</div>
-                        <div style="font-size: 11px; color: var(--text-muted); opacity: 0.8;">${b.phone}</div>
+                    <td style="padding: 15px; font-size: 13px; color: #f8fafc;">${b.date}</td>
+                    <td style="padding: 15px; color: #f8fafc;">
+                        <div style="font-size: 14px; font-weight: 800; color: #ffffff;">${b.name}</div>
+                        <div style="font-size: 11px; color: #cbd5e1; opacity: 0.9;">${b.phone}</div>
                     </td>
-                    <td style="padding: 15px; font-size: 13px; color: var(--text-main);">${b.service}</td>
+                    <td style="padding: 15px; font-size: 13px; color: #f8fafc;">${b.service}</td>
                     <td style="padding: 15px; font-size: 11px;">
-                        <span style="background: rgba(166,121,10,0.15); color: var(--accent-color); padding: 5px 10px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(166,121,10,0.2);">${b.status}</span>
+                        <span style="background: rgba(166,121,10,0.3); color: #fff; padding: 5px 12px; border-radius: 12px; font-weight: 800; border: 1px solid var(--admin-accent-bright); text-shadow: 0 1px 2px rgba(0,0,0,0.3);">${b.status}</span>
                     </td>`;
                 list.appendChild(tr);
             });
