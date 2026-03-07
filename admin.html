@@ -913,14 +913,19 @@
         </div>
     </div>
     <script>
-        window.addEventListener('load', () => {
+        // High-reliability preloader removal
+        function hidePreloader() {
             const preloader = document.getElementById('preloader');
-            if (preloader) {
+            if (preloader && !preloader.classList.contains('fade-out')) {
+                preloader.classList.add('fade-out');
                 setTimeout(() => {
-                    preloader.classList.add('fade-out');
-                }, 800);
+                    preloader.style.display = 'none';
+                }, 1000);
             }
-        });
+        }
+        window.addEventListener('load', hidePreloader);
+        // Fail-safe: hide anyway after 5 seconds
+        setTimeout(hidePreloader, 5000);
     </script>
 
 
