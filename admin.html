@@ -399,10 +399,19 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 0 10px;
-            padding-bottom: 20px;
+            padding: 10px 15px;
+            padding-bottom: 25px;
             border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 10px;
         }
+
+        .sidebar-brand img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(166, 121, 10, 0.4));
+        }
+
 
         .sidebar-nav {
             display: flex;
@@ -936,10 +945,12 @@
                 font-size: 22px;
             }
 
-            /* Hide menu icon during login */
-            #login-gate:not([style*="display: none"])~.mobile-admin-toggle {
+            /* Hide menu icon during login OR when sidebar is open */
+            #login-gate:not([style*="display: none"])~.mobile-admin-toggle,
+            .admin-sidebar.active~.mobile-admin-toggle {
                 display: none !important;
             }
+
 
 
             .sidebar-overlay {
