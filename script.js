@@ -370,31 +370,68 @@ dropdowns.forEach(dropdown => {
     });
 });
 
-// Contact Form Sync with Firebase
-const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
         const formData = new FormData(this);
+        const submitBtn = this.querySelector('.submit-btn');
+        const successMessage = document.getElementById('contactSuccessMessage');
+
+        // Loading state
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SENDING...';
+        }
+
         const submission = {
             name: formData.get('name'),
             email: formData.get('email'),
             phone: formData.get('phone'),
-            subject: formData.get('subject'),
+            subject: formData.get('subject') || 'Contact Us Inquiry',
             message: formData.get('message'),
             date: new Date().toLocaleString(),
             timestamp: Date.now()
         };
 
-        // Sync to Firebase if available
+        // 1. Sync to Firebase if available
         if (window.firebaseDB) {
             const submissionsRef = window.firebaseRef(window.firebaseDB, 'dinepro/submissions');
             window.firebasePush(submissionsRef, submission);
         }
 
-        // Keep local backup too
+        // 2. Keep local backup
         let submissions = JSON.parse(localStorage.getItem('dinepro_submissions') || '[]');
         submissions.unshift(submission);
         localStorage.setItem('dinepro_submissions', JSON.stringify(submissions.slice(0, 50)));
+
+        // 3. Send Email via FormSubmit (AJAX)
+        fetch(this.action, {
+            method: "POST",
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'SUBMIT NOW';
+            }
+            if (successMessage) {
+                successMessage.style.display = 'block';
+                setTimeout(() => { successMessage.style.display = 'none'; }, 6000);
+            }
+            this.reset();
+        })
+        .catch(error => {
+            console.error('Error sending email:', error);
+            alert('Your request was saved but there was an error sending the notification. We will contact you soon!');
+            this.reset();
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'SUBMIT NOW';
+            }
+        });
     });
 }
 
@@ -627,37 +664,70 @@ if (bookingForm) {
 
     bookingForm.addEventListener('submit', function (e) {
         e.preventDefault();
+        const submitBtn = bookingForm.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSING...';
+        }
+
+        const date = document.getElementById('bookingDate').value;
+        const time = document.getElementById('bookingTime').value;
+        const name = document.getElementById('bookingName').value;
+        const email = document.getElementById('bookingEmail').value;
+        const phone = document.getElementById('bookingPhone').value;
+        const service = document.getElementById('bookingService').value;
+        const message = document.getElementById('bookingMessage').value;
 
         const bookingData = {
-            name: document.getElementById('bookingName').value,
-            email: document.getElementById('bookingEmail').value,
-            phone: document.getElementById('bookingPhone').value,
-            service: document.getElementById('bookingService').value,
-            date: document.getElementById('bookingDate').value,
-            time: document.getElementById('bookingTime').value,
-            message: document.getElementById('bookingMessage').value,
+            name, email, phone, service, date, time, message,
             timestamp: Date.now(),
             status: 'Pending'
         };
 
-        // Sync to Firebase
+        // 1. Sync to Firebase
         if (window.firebaseDB) {
             const bookingsRef = window.firebaseRef(window.firebaseDB, 'dinepro/bookings');
             window.firebasePush(bookingsRef, bookingData);
-        } else {
-            console.error("Firebase not loaded yet");
         }
 
-        // Clear form
-        bookingForm.reset();
+        // 2. Send Notification Email via FormSubmit
+        const bookingFormData = new FormData();
+        bookingFormData.append('Type', 'New Consultation Booking Request');
+        bookingFormData.append('Name', name);
+        bookingFormData.append('Email', email);
+        bookingFormData.append('Phone', phone);
+        bookingFormData.append('Service', service);
+        bookingFormData.append('Preferred Date', date);
+        bookingFormData.append('Preferred Time', time);
+        bookingFormData.append('Requirements', message);
+        bookingFormData.append('_subject', 'DinePro: New Consultation Booking Request');
 
-        // Show success message
-        if (bookingSuccessMessage) {
-            bookingSuccessMessage.style.display = 'block';
-            setTimeout(() => {
-                bookingSuccessMessage.style.display = 'none';
-            }, 5000);
-        }
+        fetch("https://formsubmit.co/ajax/udaradon@yahoo.com", {
+            method: "POST",
+            body: bookingFormData,
+        })
+        .then(() => {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Confirm Booking';
+            }
+            if (bookingSuccessMessage) {
+                bookingSuccessMessage.style.display = 'block';
+                setTimeout(() => { bookingSuccessMessage.style.display = 'none'; }, 6000);
+            }
+            bookingForm.reset();
+        })
+        .catch(err => {
+            console.error('Email error:', err);
+            // Even if email fails, it's saved in Firebase
+            if (bookingSuccessMessage) bookingSuccessMessage.style.display = 'block';
+            bookingForm.reset();
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Confirm Booking';
+            }
+        });
     });
 }
 

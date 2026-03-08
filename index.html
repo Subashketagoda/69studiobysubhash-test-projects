@@ -408,23 +408,72 @@
                 <div class="divider"></div>
             </div>
 
-            <div class="contact-info-cards">
-                <div class="info-card">
-                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-                    <div class="info-text">
-                        <p>648/5, Nugadeniya road,<br>Pelawatta,<br>Battaramulla, Sri Lanka</p>
+            <div class="contact-grid">
+                <div class="contact-info-cards">
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="info-text">
+                            <p>648/5, Nugadeniya road,<br>Pelawatta,<br>Battaramulla, Sri Lanka</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-text">
+                            <p>udaradon@yahoo.com</p>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-icon"><i class="fas fa-phone"></i></div>
+                        <div class="info-text">
+                            <p>+94 76 258 3670 <br><small>(WhatsApp Available)</small></p>
+                        </div>
                     </div>
                 </div>
-                <div class="info-card">
-                    <div class="info-icon"><i class="fas fa-envelope"></i></div>
-                    <div class="info-text">
-                        <p>udaradon@yahoo.com</p>
+
+                <div class="contact-form-side">
+                    <div class="form-toggle-wrapper">
+                        <button class="toggle-form-btn" onclick="toggleForm('contactCollapsible', this)">
+                            <i class="fas fa-envelope-open-text"></i> Send Us a Message
+                        </button>
                     </div>
-                </div>
-                <div class="info-card">
-                    <div class="info-icon"><i class="fas fa-phone"></i></div>
-                    <div class="info-text">
-                        <p>+94 76 258 3670 <br><small>(WhatsApp Available)</small></p>
+
+                    <!-- Contact Form -->
+                    <div class="contact-form-container form-collapsible" id="contactCollapsible">
+                        <form action="https://formsubmit.co/udaradon@yahoo.com" method="POST" id="contactForm"
+                            class="futuristic-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" name="name" placeholder="Name" required>
+                                </div>
+                            </div>
+                            <div class="form-row half-grid">
+                                <div class="form-group">
+                                    <input type="email" name="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" name="phone" placeholder="Phone">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <input type="text" name="subject" placeholder="Subject">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <textarea name="message" rows="6" placeholder="Message" required></textarea>
+                                </div>
+                            </div>
+                            <div class="form-submit">
+                                <button type="submit" class="btn btn-primary submit-btn">SUBMIT NOW</button>
+                            </div>
+                            <div id="contactSuccessMessage"
+                                style="display:none; color: #A6790A; margin-top: 20px; text-align: center; font-weight: 700; background: rgba(166, 121, 10, 0.1); padding: 15px; border-radius: 12px; border: 1px solid rgba(166, 121, 10, 0.2);">
+                                <i class="fas fa-check-circle" style="margin-right: 8px;"></i> Your message has been
+                                sent
+                                successfully!
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
